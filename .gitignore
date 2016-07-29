@@ -1,0 +1,13 @@
+#/captures
+
+.idea/
+.gradle/
+build/
+obj/
+*.iml
+local.properties
+*.keystore
+gradle.properties
+
+# Other
+.DS_Store

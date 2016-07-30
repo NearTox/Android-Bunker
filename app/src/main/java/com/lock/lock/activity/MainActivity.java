@@ -26,8 +26,8 @@ implements View.OnClickListener {
 
         Fresco.initialize(this);
 
-        mIniciar = (Button)findViewById(R.id.main_iniciar);
-        mRegistar = (Button)findViewById(R.id.main_registro);
+        mIniciar = (Button) findViewById(R.id.main_iniciar);
+        mRegistar = (Button) findViewById(R.id.main_registro);
         mIniciar.setOnClickListener(this);
         mRegistar.setOnClickListener(this);
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -37,6 +37,7 @@ implements View.OnClickListener {
             String email = user.getEmail();
             Uri photoUrl = user.getPhotoUrl();
             startActivity(new Intent(this, DashBoardActivity.class));
+            FirebaseAuth.getInstance().signOut();
             finish();
         } else {
             // No user is signed in

@@ -15,7 +15,7 @@ before_script:
 
 build:
   script:
-    - gradle-2.12/bin/gradle assembleDebug check --stacktrace
+    - gradle assembleDebug check --stacktrace
   artifacts:
     paths:
     - library/build/outputs/lint-results.html

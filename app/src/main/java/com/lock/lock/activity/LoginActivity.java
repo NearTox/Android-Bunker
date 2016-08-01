@@ -10,11 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.google.android.gms.common.api.Result;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -35,7 +33,7 @@ public class LoginActivity extends AppCompatActivity {
    */
 
   // UI references.
-  private AutoCompleteTextView mEmailView;
+  private EditText mEmailView;
   private EditText mPasswordView;
   private View mProgressView;
   private View mLoginFormView;
@@ -64,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     };
     // Set up the login form.
     mPasswordView = (EditText) findViewById(R.id.password);
-    mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+    mEmailView = (EditText) findViewById(R.id.email);
     mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override

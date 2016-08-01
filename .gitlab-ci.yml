@@ -1,6 +1,6 @@
 before_script:
   - apt-get update
-  - apt-get install wget tar unzip oracle-java8-installer gradle lib32stdc++6 lib32z1
+  - apt-get install wget tar unzip openjdk-8-jdk gradle lib32stdc++6 lib32z1
   - wget --quiet --output-document=android-sdk.tgz https://dl.google.com/android/android-sdk_r24.4.1-linux.tgz
   - tar --extract --gzip --file=android-sdk.tgz
   - echo y | android-sdk-linux/tools/android --silent update sdk --no-ui --all --filter android-24

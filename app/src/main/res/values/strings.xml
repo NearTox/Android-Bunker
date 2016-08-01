@@ -1,18 +1,18 @@
 <resources>
-    <string name="app_name">Lock</string>
-    <string name="title_activity_login">Sign in</string>
+  <string name="app_name">Lock</string>
+  <string name="title_activity_login">| Iniciar Secion</string>
+  <string name="title_activity_signup">| Registrarse</string>
 
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="loading">Loading...</string>
+  <!-- Strings related to login -->
+  <string name="prompt_email">Email</string>
+  <string name="prompt_password">Constraseña</string>
+  <string name="action_sign_in">Iniciar Secion</string>
+  <string name="action_sign_up">Registrarse</string>
+  <string name="error_invalid_email">Este correo es invalido</string>
+  <string name="error_invalid_password">La contraseña es muy corta</string>
+  <string name="error_incorrect_password">La Contraseña es incorrecta</string>
+  <string name="error_user_exists">Este email ya esta registrado</string>
+  <string name="error_field_required">Este campo es requerido</string>
+  <string name="loading">Cargando...</string>
+  <string name="action_recover_pass">Recuperar cotraseña</string>
 </resources>

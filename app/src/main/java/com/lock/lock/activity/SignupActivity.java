@@ -14,12 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -27,12 +24,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.lock.lock.R;
 
-
-/**
- * A login screen that offers login via email/password.
- */
-public class LoginActivity extends AppCompatActivity {
-  private static final String TAG = LoginActivity.class.getName();
+public class SignupActivity extends AppCompatActivity {
+  private static final String TAG = SignupActivity.class.getName();
   private FirebaseAuth mAuth;
   private FirebaseAuth.AuthStateListener mAuthListener;
   /**
@@ -51,8 +44,7 @@ public class LoginActivity extends AppCompatActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_login);
-
+    setContentView(R.layout.activity_signup);
     mAuth = FirebaseAuth.getInstance();
     mAuthListener = new FirebaseAuth.AuthStateListener() {
       @Override
@@ -150,7 +142,7 @@ public class LoginActivity extends AppCompatActivity {
         //InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
       }
-      MyLoader task = new MyLoader(email, password);
+      SignupActivity.MyLoader task = new SignupActivity.MyLoader(email, password);
       task.execute((Void) null);
     }
   }
@@ -224,8 +216,8 @@ public class LoginActivity extends AppCompatActivity {
 
       // TODO: attempt authentication against a network service.
       mAuthTask = true;
-      mAuth.signInWithEmailAndPassword(mEmail, mPassword)
-          .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+      mAuth.createUserWithEmailAndPassword(mEmail, mPassword)
+          .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
               Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
@@ -235,24 +227,26 @@ public class LoginActivity extends AppCompatActivity {
               // signed in user can be handled in the listener.
               mAuthTask = false;
               showProgress(false);
+
               if(task.isSuccessful()) {
                 finish();
               } else {
+
                 try {
                   throw task.getException();
                 } catch(FirebaseAuthWeakPasswordException e) {
                   mPasswordView.setError(getString(R.string.error_invalid_password));
                   mPasswordView.requestFocus();
-                } catch(FirebaseAuthInvalidUserException e) {
+                }catch(FirebaseAuthInvalidUserException e) {
                   mEmailView.setError(getString(R.string.error_invalid_email));
                   mEmailView.requestFocus();
                 } catch(FirebaseAuthInvalidCredentialsException e) {
                   mPasswordView.setError(getString(R.string.error_incorrect_password));
                   mPasswordView.requestFocus();
-                } /*catch(FirebaseAuthUserCollisionException e) {
+                } catch(FirebaseAuthUserCollisionException e) {
                   mEmailView.setError(getString(R.string.error_user_exists));
                   mEmailView.requestFocus();
-                } */catch(Exception e) {
+                } catch(Exception e) {
                   Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
                 }
               }

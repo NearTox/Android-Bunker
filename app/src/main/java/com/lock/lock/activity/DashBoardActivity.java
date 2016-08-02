@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.lock.lock.R;
 
 public class DashBoardActivity extends AppCompatActivity {
@@ -15,6 +16,9 @@ public class DashBoardActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_dash_board);
+
+    Fresco.initialize(this);
+
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 

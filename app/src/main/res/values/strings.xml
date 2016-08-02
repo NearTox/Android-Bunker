@@ -1,12 +1,13 @@
 <resources>
   <string name="app_name">Lock</string>
-  <string name="title_activity_login">| Iniciar Secion</string>
+  <string name="title_activity_login">| Iniciar Sesión</string>
   <string name="title_activity_signup">| Registrarse</string>
 
   <!-- Strings related to login -->
+  <string name="prompt_email_or_username">Email o Usuario</string>
   <string name="prompt_email">Email</string>
-  <string name="prompt_password">Constraseña</string>
-  <string name="action_sign_in">Iniciar Secion</string>
+  <string name="prompt_password">Contraseña</string>
+  <string name="action_sign_in">Iniciar Sesión</string>
   <string name="action_sign_up">Registrarse</string>
   <string name="error_invalid_email">Este correo es invalido</string>
   <string name="error_invalid_password">La contraseña es muy corta</string>
@@ -14,5 +15,5 @@
   <string name="error_user_exists">Este email ya esta registrado</string>
   <string name="error_field_required">Este campo es requerido</string>
   <string name="loading">Cargando...</string>
-  <string name="action_recover_pass">Recuperar cotraseña</string>
+  <string name="action_recover_pass">Recuperar contraseña</string>
 </resources>

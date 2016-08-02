@@ -40,8 +40,6 @@ implements View.OnClickListener {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
 
-    Fresco.initialize(this);
-
     Button mIniciar = (Button) findViewById(R.id.main_iniciar);
     Button mRegistar = (Button) findViewById(R.id.main_registro);
     mIniciar.setOnClickListener(this);

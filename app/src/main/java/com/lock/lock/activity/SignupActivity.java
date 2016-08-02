@@ -61,9 +61,9 @@ public class SignupActivity extends AppCompatActivity {
       }
     };
     // Set up the login form.
-    mPasswordView = (EditText) findViewById(R.id.password);
-    mEmailView = (EditText) findViewById(R.id.email);
-    mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+    mPasswordView = (EditText) findViewById(R.id.sign_up_form_password);
+    mEmailView = (EditText) findViewById(R.id.sign_up_form_email);
+    mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -71,8 +71,8 @@ public class SignupActivity extends AppCompatActivity {
       }
     });
 
-    mLoginFormView = findViewById(R.id.login_form);
-    mProgressView = findViewById(R.id.login_progress);
+    mLoginFormView = findViewById(R.id.sign_up_form);
+    mProgressView = findViewById(R.id.sign_up_progress);
   }
 
 

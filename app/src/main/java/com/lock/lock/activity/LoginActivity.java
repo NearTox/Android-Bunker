@@ -69,9 +69,9 @@ public class LoginActivity extends AppCompatActivity {
       }
     };
     // Set up the login form.
-    mPasswordView = (EditText) findViewById(R.id.password);
-    mEmailView = (EditText) findViewById(R.id.email);
-    mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+    mPasswordView = (EditText) findViewById(R.id.login_form_password);
+    mEmailView = (EditText) findViewById(R.id.login_form_email);
+    mEmailSignInButton = (Button) findViewById(R.id.login_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {

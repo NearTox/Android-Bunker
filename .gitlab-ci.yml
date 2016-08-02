@@ -13,7 +13,7 @@ before_script:
 
 build:
   script:
-    - gradle assembleDebug check --stacktrace
+    - gradle assembleDebug --stacktrace
   artifacts:
     paths:
     - library/build/outputs/lint-results.html

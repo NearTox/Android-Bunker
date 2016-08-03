@@ -1,21 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
-        <item
-            android:icon="@drawable/ic_account_box_black_48px"
-            android:title="One" />
-        <item
-            android:title="Two" />
-        <item
-            android:title="Salir" />
-    </group>
-    <group android:checkableBehavior="single">
-        <item
-          android:icon="@drawable/ic_account_box_black_48px"
-          android:title="One" />
-        <item
-          android:title="Two" />
-        <item
-          android:title="Salir" />
-    </group>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+    android:icon="@drawable/ic_account_box"
+    android:title="One" />
+  <item
+    android:title="Two" />
+  <item
+    android:id="@+id/nav_logout"
+    android:title="Salir" />
 </menu>

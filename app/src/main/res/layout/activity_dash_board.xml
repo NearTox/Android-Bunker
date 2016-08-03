@@ -2,6 +2,7 @@
 <android.support.v4.widget.DrawerLayout
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/drawer"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
@@ -24,14 +25,18 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
     </android.support.design.widget.AppBarLayout>
     <LinearLayout
+      android:layout_marginTop="?attr/actionBarSize"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical"
-      android:gravity="center">
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Home"/>
+      android:orientation="vertical">
+      <android.support.v7.widget.RecyclerView
+        android:id="@+id/my_calendar_list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_calendar_day"
+        app:layoutManager="LinearLayoutManager"
+        />
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
       android:id="@+id/fab_add_client"
@@ -39,14 +44,13 @@
       android:layout_height="wrap_content"
       android:layout_gravity="bottom|end"
       android:layout_margin="@dimen/fab_margin"
-      app:srcCompat="@drawable/ic_add_black_24dp"/>
+      app:srcCompat="@drawable/ic_add"/>
   </android.support.design.widget.CoordinatorLayout>
   <android.support.design.widget.NavigationView
     android:id="@+id/nav_view"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="start"
-    android:layout_marginTop="?attr/actionBarSize"
     android:fitsSystemWindows="true"
     app:headerLayout="@layout/navheader"
     app:menu="@menu/menu_navigation" />

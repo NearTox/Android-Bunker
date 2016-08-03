@@ -15,7 +15,7 @@ before_script:
   - chmod u+x ./gradlew
 build:
   script:
-    - gradlew assembleDebug --stacktrace
+    - ./gradlew assembleDebug --stacktrace
   artifacts:
     paths:
     - library/build/outputs/lint-results.html

@@ -73,7 +73,7 @@
               android:drawableStart="@drawable/ic_account_box_black_48px"
               android:drawablePadding="6dp"
               android:id="@+id/login_form_email"
-              android:hint="@string/prompt_email_or_username"
+              android:hint="@string/prompt_email"
               android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout

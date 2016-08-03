@@ -20,16 +20,8 @@ implements View.OnClickListener {
   private void RedirectUser() {
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     if(user != null) {
-      // User is signed in
-      String name = user.getDisplayName();
-      String email = user.getEmail();
-      Uri photoUrl = user.getPhotoUrl();
       Intent dash_board = new Intent(this, DashBoardActivity.class);
-      dash_board.putExtra("name", name).
-          putExtra("email", email).
-          putExtra("photoUrl", photoUrl);
       startActivity(dash_board);
-      //FirebaseAuth.getInstance().signOut();
       finish();
     }
 

@@ -4,7 +4,6 @@
   <string name="title_activity_signup">| Registrarse</string>
 
   <!-- Strings related to login -->
-  <string name="prompt_email_or_username">Email o Usuario</string>
   <string name="prompt_email">Email</string>
   <string name="prompt_password">Contraseña</string>
   <string name="action_sign_in">Iniciar Sesión</string>

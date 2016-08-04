@@ -16,8 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.lock.lock.R;
@@ -58,7 +60,19 @@ public class DashBoardActivity extends AppCompatActivity
 
     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
-
+    View headerLayout = navigationView.inflateHeaderView(R.layout.navheader);
+    if(user.getEmail() != null) {
+      TextView email = (TextView)headerLayout.findViewById(R.id.nav_email_view);
+      email.setText(user.getEmail());
+    }
+    if(user.getDisplayName() != null) {
+      TextView name = (TextView)headerLayout.findViewById(R.id.nav_name_view);
+      name.setText(user.getDisplayName());
+    }
+    /*if(user.getPhotoUrl() != null) {
+      SimpleDraweeView draweeView = (SimpleDraweeView)headerLayout.findViewById(R.id.nav_imageView);
+      draweeView.setImageURI(user.getPhotoUrl());
+    }*/
 
     mCalendarList = (RecyclerView) findViewById(R.id.my_calendar_list);
     mCalendarList.setLayoutManager(new LinearLayoutManager(this));

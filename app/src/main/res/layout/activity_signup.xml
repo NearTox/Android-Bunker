@@ -68,14 +68,31 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:imeOptions="actionNext"
-              android:inputType="textEmailAddress|textNoSuggestions"
+              android:inputType="textPersonName"
               android:minWidth="350dp"
               android:drawableStart="@drawable/ic_account_box"
               android:drawablePadding="6dp"
-              android:id="@+id/sign_up_form_email"
-              android:hint="@string/prompt_email"
+              android:id="@+id/sign_up_form_name"
+              android:hint="@string/prompt_name"
               android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
+          <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_margin="4dp"
+          android:gravity="center">
+          <android.support.v7.widget.AppCompatEditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionNext"
+            android:inputType="textEmailAddress|textNoSuggestions"
+            android:minWidth="350dp"
+            android:drawableStart="@drawable/ic_mail"
+            android:drawablePadding="6dp"
+            android:id="@+id/sign_up_form_email"
+            android:hint="@string/prompt_email"
+            android:maxLines="1"/>
+        </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

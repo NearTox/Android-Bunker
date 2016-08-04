@@ -70,7 +70,7 @@
               android:imeOptions="actionNext"
               android:inputType="textEmailAddress|textNoSuggestions"
               android:minWidth="350dp"
-              android:drawableStart="@drawable/ic_account_box"
+              android:drawableStart="@drawable/ic_mail"
               android:drawablePadding="6dp"
               android:id="@+id/login_form_email"
               android:hint="@string/prompt_email"

@@ -33,13 +33,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:id="@+id/main_iniciar"
-                android:text="Iniciar Secion"/>
+                android:text="@string/action_sign_in"/>
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:id="@+id/main_registro"
-                android:text="Registrarse"/>
+                android:text="@string/action_sign_up"/>
 
         </LinearLayout>
     </LinearLayout>

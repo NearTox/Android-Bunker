@@ -53,6 +53,26 @@ public class LoginActivity extends AppCompatActivity {
         attemptLogin();
       }
     });
+    Button mEmailRecover = (Button) findViewById(R.id.login_form_recover);
+    mEmailRecover.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        /*
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+String emailAddress = "user@example.com";
+
+auth.sendPasswordResetEmail(emailAddress)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Email sent.");
+                }
+            }
+        });
+         */
+      }
+    });
 
     mLoginFormView = findViewById(R.id.login_form);
     mProgressView = findViewById(R.id.login_progress);

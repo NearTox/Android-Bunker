@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.lock.lock.R;
 
 public class SignupActivity extends AppCompatActivity {
@@ -34,6 +36,7 @@ public class SignupActivity extends AppCompatActivity {
   // UI references.
   private EditText mEmailView;
   private EditText mPasswordView;
+  private EditText mNameView;
   private View mProgressView;
   private View mLoginFormView;
   private Button mEmailSignInButton;
@@ -48,6 +51,7 @@ public class SignupActivity extends AppCompatActivity {
     // Set up the login form.
     mPasswordView = (EditText) findViewById(R.id.sign_up_form_password);
     mEmailView = (EditText) findViewById(R.id.sign_up_form_email);
+    mNameView= (EditText) findViewById(R.id.sign_up_form_name);
     mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -123,6 +127,22 @@ public class SignupActivity extends AppCompatActivity {
               showProgress(false);
 
               if(task.isSuccessful()) {
+                FirebaseUser user= mAuth.getCurrentUser();
+                if(user!=null){
+                  UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                      .setDisplayName(mNameView.getText().toString())
+                      .build();
+
+                  user.updateProfile(profileUpdates)
+                      .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                          if (task.isSuccessful()) {
+                            Log.d(TAG, "User profile updated.");
+                          }
+                        }
+                      });
+                }
                 finish();
               } else {
 

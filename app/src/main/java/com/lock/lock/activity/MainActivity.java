@@ -2,6 +2,7 @@ package com.lock.lock.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,17 +13,18 @@ import com.lock.lock.R;
 public class MainActivity extends BaseAuth
 implements View.OnClickListener {
   private static final String TAG = MainActivity.class.getName();
-  protected void onAuthStateChanged(FirebaseUser user) {
-    if(user != null) {
-      // User is signed in
-      Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
-      Intent dash_board = new Intent(this, DashBoardActivity.class);
-      startActivity(dash_board);
-      finish();
-    } else {
-      // User is signed out
-      Log.d(TAG, "onAuthStateChanged: signed_out");
-    }
+
+  @Override
+  protected void onLogIn(@NonNull FirebaseUser user) {
+    Intent dash_board = new Intent(this, DashBoardActivity.class);
+
+    startActivity(dash_board);
+    finish();
+  }
+
+  @Override
+  protected void onLogOut() {
+
   }
 
   @Override
@@ -37,6 +39,7 @@ implements View.OnClickListener {
     mRegistar.setOnClickListener(this);
 
   }
+
   @Override
   public void onClick(View view) {
     if(view.getId() == R.id.main_iniciar) {

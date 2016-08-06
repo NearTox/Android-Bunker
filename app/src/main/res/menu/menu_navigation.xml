@@ -5,21 +5,24 @@
     android:id="@+id/nav_group1"
     android:checkableBehavior="single">
     <item
+      android:id="@+id/nav_home"
       android:icon="@drawable/ic_home"
       android:checked="true"
-      android:title="Home" />
+      android:title="@string/nav_home" />
     <item
-      android:icon="@drawable/ic_account_box"
-      android:title="Mi Cuenta" />
+      android:id="@+id/nav_people"
+      android:icon="@drawable/ic_people"
+      android:title="@string/nav_people" />
     <item
+      android:id="@+id/nav_settings"
       android:icon="@drawable/ic_settings"
-      android:title="Configuración" />
+      android:title="@string/nav_settings" />
   </group>
   <group
     android:id="@+id/nav_group2">
     <item
-      android:icon="@drawable/ic_exit_to_app"
       android:id="@+id/nav_logout"
-      android:title="Salir" />
+      android:icon="@drawable/ic_exit_to_app"
+      android:title="@string/nav_logout" />
   </group>
 </menu>

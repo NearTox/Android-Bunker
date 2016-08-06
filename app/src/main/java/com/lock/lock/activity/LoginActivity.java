@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -16,19 +17,18 @@ import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
+import com.lock.lock.EmailFormater;
 import com.lock.lock.R;
 
 
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseAuth {
   private static final String TAG = LoginActivity.class.getSimpleName();
-
-  private FirebaseAuth mAuth;
 
   // UI references.
   private EditText mEmailView;
@@ -42,7 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
 
-    mAuth = FirebaseAuth.getInstance();
     // Set up the login form.
     mPasswordView = (EditText) findViewById(R.id.login_form_password);
     mEmailView = (EditText) findViewById(R.id.login_form_email);
@@ -77,6 +76,17 @@ auth.sendPasswordResetEmail(emailAddress)
     mLoginFormView = findViewById(R.id.login_form);
     mProgressView = findViewById(R.id.login_progress);
   }
+
+  @Override
+  protected void onLogIn(@NonNull FirebaseUser user) {
+    finish();
+  }
+
+  @Override
+  protected void onLogOut() {
+    Log.e(TAG,"Must only occur one time");
+  }
+
   private void attemptLogin() {
     if(mAuthTask) {
       return;
@@ -88,6 +98,7 @@ auth.sendPasswordResetEmail(emailAddress)
 
     // Store values at the time of the login attempt.
     String email = mEmailView.getText().toString().trim();
+    EmailFormater email_info = new EmailFormater(email);
     String password = mPasswordView.getText().toString().trim();
 
     boolean cancel = false;
@@ -101,11 +112,11 @@ auth.sendPasswordResetEmail(emailAddress)
     }
 
     // Check for a valid email address.
-    if(email.trim().isEmpty()) {
+    if(email.isEmpty()) {
       mEmailView.setError(getString(R.string.error_field_required));
       focusView = mEmailView;
       cancel = true;
-    } else if(!isEmailValid(email)) {
+    } else if(!email_info.isValid()) {
       mEmailView.setError(getString(R.string.error_invalid_email));
       focusView = mEmailView;
       cancel = true;
@@ -119,59 +130,61 @@ auth.sendPasswordResetEmail(emailAddress)
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      View cfocus = this.getCurrentFocus();
+      /*View cfocus = this.getCurrentFocus();
       if(cfocus != null) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
-      }
+        imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+      }*/
       mAuthTask = true;
+      email = email_info.GetEmail();
       mAuth.signInWithEmailAndPassword(email, password)
-          .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-              Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+          @Override
+          public void onComplete(@NonNull Task<AuthResult> task) {
+            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-              // If sign in fails, display a message to the user. If sign in succeeds
-              // the auth state listener will be notified and logic to handle the
-              // signed in user can be handled in the listener.
-              mAuthTask = false;
-              showProgress(false);
-              if(task.isSuccessful()) {
-                finish();
-              } else {
-                try {
-                  throw task.getException();
-                } catch(FirebaseAuthWeakPasswordException e) {
-                  mPasswordView.setError(getString(R.string.error_invalid_password));
-                  mPasswordView.requestFocus();
-                } catch(FirebaseAuthInvalidUserException e) {
-                  mEmailView.setError(getString(R.string.error_invalid_email));
-                  mEmailView.requestFocus();
-                } catch(FirebaseAuthInvalidCredentialsException e) {
-                  mPasswordView.setError(getString(R.string.error_incorrect_password));
-                  mPasswordView.requestFocus();
-                } /*catch(FirebaseAuthUserCollisionException e) {
-                  mEmailView.setError(getString(R.string.error_user_exists));
-                  mEmailView.requestFocus();
-                } */catch(Exception e) {
-                  Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
+            // If sign in fails, display a message to the user. If sign in succeeds
+            // the auth state listener will be notified and logic to handle the
+            // signed in user can be handled in the listener.
+            mAuthTask = false;
+            showProgress(false);
+            if(!task.isSuccessful()) {
+              /*try {
+                throw task.getException();
+              } catch(FirebaseAuthWeakPasswordException e) {
+                mPasswordView.setError(getString(R.string.error_invalid_password));
+                mPasswordView.requestFocus();
+              } catch(FirebaseAuthInvalidUserException e) {
+                mEmailView.setError(getString(R.string.error_invalid_email));
+                mEmailView.requestFocus();
+              } catch(FirebaseAuthInvalidCredentialsException e) {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+              } catch(FirebaseAuthUserCollisionException e) {
+                mEmailView.setError(getString(R.string.error_user_exists));
+                mEmailView.requestFocus();
+              } catch(Exception e) {
+                Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
+              }*/
+              Exception theException = task.getException();
+              if(theException != null) {
+                if(theException instanceof FirebaseAuthException) {
+                  FirebaseAuthException exc = (FirebaseAuthException) theException;
+                  Log.e(TAG, "Exception: " + exc.getErrorCode());
+                } else {
+                  Log.e(TAG, "Exception: " + theException.getMessage());
                 }
+
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+
               }
-
-              // ...
             }
-          });
+
+            // ...
+          }
+        });
     }
-  }
-
-  private boolean isEmailValid(String email) {
-    //TODO: Replace this with your own logic
-    return email.contains("@");
-  }
-
-  private boolean isPasswordValid(String password) {
-    //TODO: Replace this with your own logic
-    return password.length() > 4;
   }
 
   /**

@@ -3,14 +3,40 @@ package com.lock.lock.activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public abstract class BaseAuth extends AppCompatActivity {
+public abstract class BaseAuth extends AppCompatActivity
+  implements FirebaseAuth.AuthStateListener {
+  private static final String TAG = MainActivity.class.getName();
 
-  private FirebaseAuth mAuth;
-  private FirebaseAuth.AuthStateListener mAuthListener;
+  protected FirebaseAuth mAuth;
+  private boolean mIsUserLogging = false;
+  private boolean mUniqueLogOut = true;
+
+  @Override
+  public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+    FirebaseUser user = firebaseAuth.getCurrentUser();
+    if(user != null) {
+      // User is signed in
+      Log.d(TAG, "onAuthStateChanged: signed_in: " + user.getUid());
+      if(!mIsUserLogging) {
+        mIsUserLogging = true;
+        onLogIn(user);
+      }
+      mUniqueLogOut = true;
+    } else {
+      mIsUserLogging = false;
+      if(mUniqueLogOut){
+        onLogOut();
+        mUniqueLogOut = false;
+      }
+      // User is signed out
+      Log.d(TAG, "onAuthStateChanged: signed_out");
+    }
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -18,28 +44,25 @@ public abstract class BaseAuth extends AppCompatActivity {
 
     // initialize_auth
     mAuth = FirebaseAuth.getInstance();
-    mAuthListener = new FirebaseAuth.AuthStateListener() {
-      @Override
-      public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        BaseAuth.this.onAuthStateChanged(user);
-      }
-    };
   }
 
   @Override
   public void onStart() {
     super.onStart();
-    mAuth.addAuthStateListener(mAuthListener);
+    mAuth.addAuthStateListener(this);
   }
 
   @Override
   public void onStop() {
     super.onStop();
-    if (mAuthListener != null) {
-      mAuth.removeAuthStateListener(mAuthListener);
-    }
+    mAuth.removeAuthStateListener(this);
   }
 
-  protected abstract void onAuthStateChanged(FirebaseUser user);
+  protected boolean isPasswordValid(String password) {
+    return password.length() > 4;
+  }
+
+
+  abstract protected void onLogIn(@NonNull FirebaseUser user);
+  abstract protected void onLogOut();
 }

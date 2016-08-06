@@ -16,4 +16,8 @@
   <string name="error_field_required">Este campo es requerido</string>
   <string name="loading">Cargando...</string>
   <string name="action_recover_pass">Recuperar contraseña</string>
+  <string name="nav_home">Home</string>
+  <string name="nav_settings">Ajustes</string>
+  <string name="nav_people">Contactos</string>
+  <string name="nav_logout">Salir</string>
 </resources>

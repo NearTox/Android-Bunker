@@ -2,8 +2,7 @@
 <menu
   xmlns:android="http://schemas.android.com/apk/res/android">
   <group
-    android:id="@+id/nav_group1"
-    android:checkableBehavior="single">
+    android:id="@+id/nav_group1">
     <item
       android:id="@+id/nav_home"
       android:icon="@drawable/ic_home"
@@ -13,13 +12,16 @@
       android:id="@+id/nav_people"
       android:icon="@drawable/ic_people"
       android:title="@string/nav_people" />
+  </group>
+  <group
+    android:id="@+id/nav_group2">
     <item
       android:id="@+id/nav_settings"
       android:icon="@drawable/ic_settings"
       android:title="@string/nav_settings" />
   </group>
   <group
-    android:id="@+id/nav_group2">
+    android:id="@+id/nav_group3">
     <item
       android:id="@+id/nav_logout"
       android:icon="@drawable/ic_exit_to_app"

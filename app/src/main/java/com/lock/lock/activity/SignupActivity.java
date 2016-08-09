@@ -3,22 +3,20 @@ package com.lock.lock.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -35,9 +33,10 @@ public class SignupActivity extends BaseAuth {
   private EditText mEmailView;
   private EditText mPasswordView;
   private EditText mNameView;
+
   private View mProgressView;
   private View mLoginFormView;
-  private Button mEmailSignInButton;
+
   private boolean mAuthTask = false;
 
   @Override
@@ -45,20 +44,29 @@ public class SignupActivity extends BaseAuth {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_signup);
 
+    Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
+    setSupportActionBar(myToolbar);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setTitle(getString(R.string.action_sign_up));
+
     // Set up the login form.
+    //EditText
     mPasswordView = (EditText) findViewById(R.id.sign_up_form_password);
     mEmailView = (EditText) findViewById(R.id.sign_up_form_email);
     mNameView = (EditText) findViewById(R.id.sign_up_form_name);
-    mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
+
+    //View
+    mLoginFormView = findViewById(R.id.sign_up_form);
+    mProgressView = findViewById(R.id.sign_up_progress);
+
+    //Button
+    Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         attemptLogin();
       }
     });
-
-    mLoginFormView = findViewById(R.id.sign_up_form);
-    mProgressView = findViewById(R.id.sign_up_progress);
   }
 
 
@@ -77,10 +85,10 @@ public class SignupActivity extends BaseAuth {
             if(task.isSuccessful()) {
               Log.d(TAG, "User profile updated.");
             }
+            finish();
           }
         });
     }
-    finish();
   }
 
   @Override
@@ -107,7 +115,7 @@ public class SignupActivity extends BaseAuth {
 
     // Check for a valid password, if the user entered one.
     if(!isPasswordValid(password)) {
-      mPasswordView.setError(getString(R.string.error_invalid_password));
+      mPasswordView.setError(getString(R.string.error_small_password));
       focusView = mPasswordView;
       cancel = true;
     }
@@ -151,10 +159,10 @@ public class SignupActivity extends BaseAuth {
             // the auth state listener will be notified and logic to handle the
             // signed in user can be handled in the listener.
             mAuthTask = false;
-            showProgress(false);
 
             if(!task.isSuccessful()) {
-              try {
+              showProgress(false);
+              /*try {
                 throw task.getException();
               } catch(FirebaseAuthWeakPasswordException e) {
                 mPasswordView.setError(getString(R.string.error_invalid_password));
@@ -170,6 +178,19 @@ public class SignupActivity extends BaseAuth {
                 mEmailView.requestFocus();
               } catch(Exception e) {
                 Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
+              }*/
+              Exception theException = task.getException();
+              if(theException != null) {
+                if(theException instanceof FirebaseAuthException) {
+                  FirebaseAuthException exc = (FirebaseAuthException) theException;
+                  Log.e(TAG, "Exception: " + exc.getErrorCode());
+                } else {
+                  Log.e(TAG, "Exception: " + theException.getMessage());
+                }
+
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+
               }
             }
 
@@ -210,5 +231,16 @@ public class SignupActivity extends BaseAuth {
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if(id == android.R.id.home) {
+      finish();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

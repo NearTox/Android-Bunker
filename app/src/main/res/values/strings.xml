@@ -10,23 +10,26 @@
   <string name="action_sign_in">Iniciar Sesión</string>
   <string name="action_sign_up">Registrarse</string>
   <string name="error_invalid_email">Este correo es invalido</string>
-  <string name="error_invalid_password">La contraseña es muy corta</string>
+  <string name="error_small_password">La contraseña es muy corta</string>
   <string name="error_incorrect_password">La contraseña es incorrecta</string>
   <string name="error_user_exists">Este email ya esta registrado</string>
   <string name="error_field_required">Este campo es requerido</string>
   <string name="loading">Cargando...</string>
   <string name="action_recover_pass">Recuperar contraseña</string>
+
+  <!-- Strings related to the dashboard -->
   <string name="nav_home">Home</string>
   <string name="nav_settings">Ajustes</string>
   <string name="nav_people">Contactos</string>
   <string name="nav_logout">Salir</string>
 
+  <!-- Strings related to Add new contact -->
   <string-array name="empresas">
     <item>El Agila</item>
     <item>Mapfre</item>
   </string-array>
 
-  <string-array name="duracion">
+  <string-array name="duration">
     <item>Anual</item>
     <item>Bimestral</item>
     <item>Semanal</item>

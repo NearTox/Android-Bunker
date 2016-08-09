@@ -11,6 +11,4 @@ public class CalendarModel {
   public boolean IsPreferenctial;
   public String Company;
   public int Plan;
-
-
 }

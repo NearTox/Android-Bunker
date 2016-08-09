@@ -6,12 +6,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -21,21 +21,30 @@ import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.lock.lock.R;
+import com.lock.lock.model.Empresa;
 import com.lock.lock.recycler.CalendarAdapter;
-
-import java.net.URI;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class DashBoardActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
-
+  private final String TAG = DashBoardActivity.class.getSimpleName();
   private RecyclerView mCalendarList;
   private CalendarAdapter mCalendarAdapter;
   private DrawerLayout drawerLayout;
 
+  FirebaseDatabase mDatabase;
+  DatabaseReference mEmpresas;
+
+
   private FirebaseUser user;
+
   public static final String md5(final String s) {
     final String MD5 = "MD5";
     try {
@@ -47,19 +56,20 @@ public class DashBoardActivity extends AppCompatActivity
 
       // Create Hex String
       StringBuilder hexString = new StringBuilder();
-      for (byte aMessageDigest : messageDigest) {
+      for(byte aMessageDigest : messageDigest) {
         String h = Integer.toHexString(0xFF & aMessageDigest);
-        while (h.length() < 2)
+        while(h.length() < 2)
           h = "0" + h;
         hexString.append(h);
       }
       return hexString.toString();
 
-    } catch (NoSuchAlgorithmException e) {
+    } catch(NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
     return "";
   }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -67,12 +77,108 @@ public class DashBoardActivity extends AppCompatActivity
     setContentView(R.layout.activity_dash_board);
 
     user = FirebaseAuth.getInstance().getCurrentUser();
-    drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
-    Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+    mDatabase = FirebaseDatabase.getInstance();
+    //mDatabase.setPersistenceEnabled(true);
+    mEmpresas = mDatabase.getReference("empresas");
+    DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+    connectedRef.addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot snapshot) {
+        boolean connected = snapshot.getValue(Boolean.class);
+        if (connected) {
+          Log.d(TAG, "connected");
+        } else {
+          Log.d(TAG, "not connected");
+        }
+      }
+
+      @Override
+      public void onCancelled(DatabaseError error) {
+        Log.d(TAG, "Listener was cancelled");
+      }
+    });
+
+    mEmpresas.addValueEventListener(new ValueEventListener() {
+      @Override
+      public void onDataChange(DataSnapshot dataSnapshot) {
+        Log.d(TAG, "There are " + dataSnapshot.getChildrenCount() + " blog posts");
+        for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+          String name = (String) postSnapshot.child("Nombre").getValue();
+          Log.d(TAG, name);
+          Empresa company =postSnapshot.getValue(Empresa.class);
+          Log.d(TAG, company.toString());
+        }
+      }
+
+      @Override
+      public void onCancelled(DatabaseError error) {
+        // Failed to read value
+        Log.w(TAG, "Failed to read value.", error.toException());
+      }
+    });
+    /*ChildEventListener childEventListener = new ChildEventListener() {
+      @Override
+      public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
+        Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
+
+        // A new comment has been added, add it to the displayed list
+        Comment comment = dataSnapshot.getValue(Comment.class);
+
+        // ...
+      }
+
+      @Override
+      public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+        Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
+
+        // A comment has changed, use the key to determine if we are displaying this
+        // comment and if so displayed the changed comment.
+        Comment newComment = dataSnapshot.getValue(Comment.class);
+        String commentKey = dataSnapshot.getKey();
+
+        // ...
+      }
+
+      @Override
+      public void onChildRemoved(DataSnapshot dataSnapshot) {
+        Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
+
+        // A comment has changed, use the key to determine if we are displaying this
+        // comment and if so remove it.
+        String commentKey = dataSnapshot.getKey();
+
+        // ...
+      }
+
+      @Override
+      public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+        Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
+
+        // A comment has changed position, use the key to determine if we are
+        // displaying this comment and if so move it.
+        Comment movedComment = dataSnapshot.getValue(Comment.class);
+        String commentKey = dataSnapshot.getKey();
+
+        // ...
+      }
+
+      @Override
+      public void onCancelled(DatabaseError databaseError) {
+        Log.w(TAG, "postComments:onCancelled", databaseError.toException());
+        Toast.makeText(DashBoardActivity.this, "Failed to load comments.",
+            Toast.LENGTH_SHORT).show();
+      }
+    };
+    mDatabase.addChildEventListener(childEventListener);*/
+
+
+    drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
+    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab_add_client);
+    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_client);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -83,36 +189,36 @@ public class DashBoardActivity extends AppCompatActivity
         context.startActivity(intent);
       }
     });
-    final ActionBar ab = getSupportActionBar();
-    ab.setHomeAsUpIndicator(R.drawable.ic_menu);
-    ab.setDisplayHomeAsUpEnabled(true);
 
-    NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
     View headerLayout = navigationView.inflateHeaderView(R.layout.navheader);
     if(user.getEmail() != null) {
-      TextView email = (TextView)headerLayout.findViewById(R.id.nav_email_view);
+      TextView email = (TextView) headerLayout.findViewById(R.id.nav_email_view);
       email.setText(user.getEmail());
     }
     if(user.getDisplayName() != null) {
-      TextView name = (TextView)headerLayout.findViewById(R.id.nav_name_view);
+      TextView name = (TextView) headerLayout.findViewById(R.id.nav_name_view);
       name.setText(user.getDisplayName());
     }
-    SimpleDraweeView draweeView = (SimpleDraweeView)headerLayout.findViewById(R.id.nav_imageView);
+    SimpleDraweeView draweeView = (SimpleDraweeView) headerLayout.findViewById(R.id.nav_imageView);
     RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
     roundingParams.setBorder(R.color.colorPrimaryDark, 1.0f);
     roundingParams.setRoundAsCircle(true);
     draweeView.getHierarchy().setRoundingParams(roundingParams);
     if(user.getPhotoUrl() != null) {
       draweeView.setImageURI(user.getPhotoUrl());
-    }else if(user.getEmail() != null) {
+    } else if(user.getEmail() != null) {
       String md5_email = md5(user.getEmail());
       if(!md5_email.isEmpty()) {
         draweeView.setImageURI("https://secure.gravatar.com/avatar/" + md5_email);
       }
     }
 
-    mCalendarList = (RecyclerView)findViewById(R.id.my_calendar_list);
+    mCalendarList = (RecyclerView) findViewById(R.id.my_calendar_list);
     mCalendarList.setLayoutManager(new LinearLayoutManager(this));
     mCalendarAdapter = new CalendarAdapter(this);
     mCalendarList.setAdapter(mCalendarAdapter);

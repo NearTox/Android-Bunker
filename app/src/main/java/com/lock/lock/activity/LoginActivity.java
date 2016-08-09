@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -33,8 +35,10 @@ public class LoginActivity extends BaseAuth {
   // UI references.
   private EditText mEmailView;
   private EditText mPasswordView;
+
   private View mProgressView;
   private View mLoginFormView;
+
   private boolean mAuthTask = false;
 
   @Override
@@ -42,9 +46,21 @@ public class LoginActivity extends BaseAuth {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
 
+    Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
+    setSupportActionBar(myToolbar);
+    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    getSupportActionBar().setTitle(getString(R.string.action_sign_in));
+
     // Set up the login form.
+    //EditText
     mPasswordView = (EditText) findViewById(R.id.login_form_password);
     mEmailView = (EditText) findViewById(R.id.login_form_email);
+
+    //View
+    mLoginFormView = findViewById(R.id.login_form);
+    mProgressView = findViewById(R.id.login_progress);
+
+    //Button
     Button mEmailSignInButton = (Button) findViewById(R.id.login_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -73,8 +89,6 @@ auth.sendPasswordResetEmail(emailAddress)
       }
     });
 
-    mLoginFormView = findViewById(R.id.login_form);
-    mProgressView = findViewById(R.id.login_progress);
   }
 
   @Override
@@ -106,7 +120,7 @@ auth.sendPasswordResetEmail(emailAddress)
 
     // Check for a valid password, if the user entered one.
     if(!isPasswordValid(password)) {
-      mPasswordView.setError(getString(R.string.error_invalid_password));
+      mPasswordView.setError(getString(R.string.error_small_password));
       focusView = mPasswordView;
       cancel = true;
     }
@@ -147,8 +161,8 @@ auth.sendPasswordResetEmail(emailAddress)
             // the auth state listener will be notified and logic to handle the
             // signed in user can be handled in the listener.
             mAuthTask = false;
-            showProgress(false);
             if(!task.isSuccessful()) {
+              showProgress(false);
               /*try {
                 throw task.getException();
               } catch(FirebaseAuthWeakPasswordException e) {
@@ -221,5 +235,16 @@ auth.sendPasswordResetEmail(emailAddress)
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    int id = item.getItemId();
+
+    if(id == android.R.id.home) {
+      finish();
+      return true;
+    }
+    return super.onOptionsItemSelected(item);
   }
 }

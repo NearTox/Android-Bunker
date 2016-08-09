@@ -11,8 +11,6 @@ import android.view.MenuItem;
 import com.lock.lock.R;
 
 public class AddNewActivity extends AppCompatActivity {
-  private DrawerLayout drawerLayout;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -21,7 +19,6 @@ public class AddNewActivity extends AppCompatActivity {
     setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setTitle("Nueva Poliza");
-    drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
   }
 
   @Override

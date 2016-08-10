@@ -12,12 +12,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -83,14 +85,14 @@ public class DashBoardActivity extends AppCompatActivity
     user = FirebaseAuth.getInstance().getCurrentUser();
 
     mDatabase = FirebaseDatabase.getInstance();
-    //mDatabase.setPersistenceEnabled(true);
+    mDatabase.setPersistenceEnabled(true);
     mEmpresas = mDatabase.getReference("empresas");
     DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
     connectedRef.addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot snapshot) {
         boolean connected = snapshot.getValue(Boolean.class);
-        if (connected) {
+        if(connected) {
           Log.d(TAG, "connected");
         } else {
           Log.d(TAG, "not connected");
@@ -110,7 +112,7 @@ public class DashBoardActivity extends AppCompatActivity
         for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
           String name = (String) postSnapshot.child("Nombre").getValue();
           Log.d(TAG, name);
-          Empresa company =postSnapshot.getValue(Empresa.class);
+          Empresa company = postSnapshot.getValue(Empresa.class);
           Log.d(TAG, company.toString());
         }
       }
@@ -223,23 +225,25 @@ public class DashBoardActivity extends AppCompatActivity
     }
 
 
-
     // Create the adapter that will return a fragment for each section
     mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-      private final Fragment[] mFragments = new Fragment[] {
-        new MyContacts(),
+      private final Fragment[] mFragments = new Fragment[]{
+          new MyContacts(),
       };
-      private final String[] mFragmentNames = new String[] {
-        "Contatctos",
+      private final String[] mFragmentNames = new String[]{
+          "Contatctos",
       };
+
       @Override
       public Fragment getItem(int position) {
         return mFragments[position];
       }
+
       @Override
       public int getCount() {
         return mFragments.length;
       }
+
       @Override
       public CharSequence getPageTitle(int position) {
         return mFragmentNames[position];
@@ -251,6 +255,12 @@ public class DashBoardActivity extends AppCompatActivity
     TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
     tabLayout.setupWithViewPager(mViewPager);
 
+    //
+    //ImageView iv = (ImageView) findViewById(R.id.img_anim);
+    //Animation rotation = AnimationUtils.loadAnimation(this, R.anim.popup_in);
+    //rotation.setRepeatCount(1);
+    //iv.startAnimation(rotation);
+    //menu.findItem(R.id.my_menu_item_id).setActionView(iv);
   }
 
   @Override

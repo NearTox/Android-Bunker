@@ -1,6 +1,5 @@
 package com.lock.lock.recycler;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,20 +21,19 @@ import com.lock.lock.model.CalendarModel;
 public abstract class ListContactsFragment extends Fragment {
   private static final String TAG = "ListContactsFragment";
 
-  // [START define_database_reference]
   private DatabaseReference mDatabase;
-  // [END define_database_reference]
 
   private FirebaseRecyclerAdapter<CalendarModel, CalendarHolder> mAdapter;
   private RecyclerView mRecycler;
   private LinearLayoutManager mManager;
 
-  public ListContactsFragment() {}
+  public ListContactsFragment() {
+  }
 
   @Override
-  public View onCreateView (LayoutInflater inflater, ViewGroup container,
-                            Bundle savedInstanceState) {
-    super.onCreateView(inflater, container, savedInstanceState);
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                           Bundle savedInstanceState) {
+    //super.onCreateView(inflater, container, savedInstanceState);
     View rootView = inflater.inflate(R.layout.fragment_all_data, container, false);
 
     // [START create_database_reference]
@@ -43,7 +41,7 @@ public abstract class ListContactsFragment extends Fragment {
     // [END create_database_reference]
 
     mRecycler = (RecyclerView) rootView.findViewById(R.id.all_data_list);
-    mRecycler.setHasFixedSize(true);
+    //mRecycler.setHasFixedSize(true);
 
     return rootView;
   }
@@ -54,14 +52,14 @@ public abstract class ListContactsFragment extends Fragment {
 
     // Set up Layout Manager, reverse layout
     mManager = new LinearLayoutManager(getActivity());
-    mManager.setReverseLayout(true);
-    mManager.setStackFromEnd(true);
+    //mManager.setReverseLayout(true);
+    //mManager.setStackFromEnd(true);
     mRecycler.setLayoutManager(mManager);
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
     mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_contants,
-      CalendarHolder.class, postsQuery) {
+        CalendarHolder.class, postsQuery) {
       @Override
       protected void populateViewHolder(final CalendarHolder viewHolder, final CalendarModel model, final int position) {
         final DatabaseReference postRef = getRef(position);
@@ -141,7 +139,7 @@ public abstract class ListContactsFragment extends Fragment {
   @Override
   public void onDestroy() {
     super.onDestroy();
-    if (mAdapter != null) {
+    if(mAdapter != null) {
       mAdapter.cleanup();
     }
   }
@@ -153,7 +151,7 @@ public abstract class ListContactsFragment extends Fragment {
   public abstract Query getQuery(DatabaseReference databaseReference);
 
 
-  protected class CalendarHolder extends RecyclerView.ViewHolder {
+  public static class CalendarHolder  extends RecyclerView.ViewHolder {
 
     public TextView nameView;
     public TextView subnameView;

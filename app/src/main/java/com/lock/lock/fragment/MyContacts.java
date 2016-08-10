@@ -6,12 +6,14 @@ import com.lock.lock.recycler.ListContactsFragment;
 
 public class MyContacts extends ListContactsFragment {
 
-    public MyContacts() {}
+  public MyContacts() {}
 
-    @Override
-    public Query getQuery(DatabaseReference databaseReference) {
-        // All my posts
-        return databaseReference.child("contact")
-                .child(getUid()).orderByChild("Name");
-    }
+  @Override
+  public Query getQuery(DatabaseReference databaseReference) {
+    // All my posts
+    DatabaseReference myData = databaseReference.child("contacts")
+        .child(getUid());
+    myData.keepSynced(true);
+    return myData.orderByChild("Name");
+  }
 }

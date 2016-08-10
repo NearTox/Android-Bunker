@@ -1,13 +1,14 @@
 package com.lock.lock.model;
 
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.IgnoreExtraProperties;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@IgnoreExtraProperties
 public class Empresa {
   public String Nombre;
-
   @SuppressWarnings("unused")
   public Empresa() {
     // Default constructor required for calls to DataSnapshot.getValue(Empresa.class)

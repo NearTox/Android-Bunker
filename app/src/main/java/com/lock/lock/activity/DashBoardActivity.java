@@ -4,7 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,17 +31,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.lock.lock.R;
+import com.lock.lock.fragment.MyContacts;
 import com.lock.lock.model.Empresa;
-import com.lock.lock.recycler.CalendarAdapter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class DashBoardActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener {
   private final String TAG = DashBoardActivity.class.getSimpleName();
-  private RecyclerView mCalendarList;
-  private CalendarAdapter mCalendarAdapter;
   private DrawerLayout drawerLayout;
+  private FragmentPagerAdapter mPagerAdapter;
+  private ViewPager mViewPager;
 
   FirebaseDatabase mDatabase;
   DatabaseReference mEmpresas;
@@ -218,10 +222,35 @@ public class DashBoardActivity extends AppCompatActivity
       }
     }
 
-    mCalendarList = (RecyclerView) findViewById(R.id.my_calendar_list);
-    mCalendarList.setLayoutManager(new LinearLayoutManager(this));
-    mCalendarAdapter = new CalendarAdapter(this);
-    mCalendarList.setAdapter(mCalendarAdapter);
+
+
+    // Create the adapter that will return a fragment for each section
+    mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+      private final Fragment[] mFragments = new Fragment[] {
+        new MyContacts(),
+      };
+      private final String[] mFragmentNames = new String[] {
+        "Contatctos",
+      };
+      @Override
+      public Fragment getItem(int position) {
+        return mFragments[position];
+      }
+      @Override
+      public int getCount() {
+        return mFragments.length;
+      }
+      @Override
+      public CharSequence getPageTitle(int position) {
+        return mFragmentNames[position];
+      }
+    };
+    // Set up the ViewPager with the sections adapter.
+    mViewPager = (ViewPager) findViewById(R.id.container);
+    mViewPager.setAdapter(mPagerAdapter);
+    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+    tabLayout.setupWithViewPager(mViewPager);
+
   }
 
   @Override

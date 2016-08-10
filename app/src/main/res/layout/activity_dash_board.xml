@@ -11,7 +11,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <include layout="@layout/app_bar_layout"/>
-    <LinearLayout
+    <!--<LinearLayout
       android:layout_marginTop="?attr/actionBarSize"
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -24,7 +24,17 @@
         tools:listitem="@layout/item_calendar_day"
         app:layoutManager="LinearLayoutManager"
         />
-    </LinearLayout>
+    </LinearLayout>-->
+    <android.support.design.widget.TabLayout
+      android:id="@+id/tabs"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content" />
+
+    <android.support.v4.view.ViewPager
+      android:id="@+id/container"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_below="@id/tabs" />
     <android.support.design.widget.FloatingActionButton
       android:id="@+id/fab_add_client"
       android:layout_width="wrap_content"

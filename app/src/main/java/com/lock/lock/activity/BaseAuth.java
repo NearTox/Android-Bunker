@@ -58,9 +58,8 @@ public abstract class BaseAuth extends AppCompatActivity
   }
 
   protected boolean isPasswordValid(String password) {
-    return password.length() > 4;
+    return password.length() > 3;
   }
-
 
   abstract protected void onLogIn(@NonNull FirebaseUser user);
   abstract protected void onLogOut();

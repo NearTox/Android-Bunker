@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
-        <ImageButton
+        <ImageView
+          android:id="@+id/item_icon"
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_marginEnd="8dp"
@@ -35,16 +36,16 @@
           android:layout_height="wrap_content"
           android:orientation="vertical">
           <TextView
+            android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="2dp"
-            android:text="Lorem"/>
+            android:layout_marginBottom="2dp"/>
           <TextView
+            android:id="@+id/item_subname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lorem"/>
+            android:layout_height="wrap_content"/>
         </LinearLayout>
       </LinearLayout>
     </LinearLayout>

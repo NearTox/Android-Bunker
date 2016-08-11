@@ -8,15 +8,19 @@ import java.util.Map;
 
 @IgnoreExtraProperties
 public class CalendarModel {
-  public String Day;
-  public String Month;
-
-  public String NoPoliza;
+  // 1-31
+  public int Day;
+  // 1-12
+  public int Month;
+  //
+  public int NoPoliza;
   public String Name;
   public String Phone;
   public String Email;
   public boolean IsPreferenctial;
   public String Company;
+
+  // Monthly
   public int Plan;
 
   public CalendarModel() {  }

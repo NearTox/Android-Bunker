@@ -10,7 +10,7 @@ import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.lock.lock.MyDatabase;
 import com.lock.lock.R;
 import com.lock.lock.model.CalendarModel;
 
@@ -24,7 +24,7 @@ public class AddNewActivity extends AppCompatActivity {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_add_new);
-    mDatabase = FirebaseDatabase.getInstance().getReference();
+    mDatabase = MyDatabase.getInstance().getReference();
     setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setTitle("Nueva Poliza");
@@ -43,7 +43,7 @@ public class AddNewActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     if(id == android.R.id.home) {
-      writeNewPost("1234","567","89");
+      writeNewPost(1234,"567","89");
       finish();
       return true;
     } else if(id == R.id.menu_add_new_descartar) {
@@ -53,7 +53,7 @@ public class AddNewActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  private void writeNewPost(String NoPoliza, String name, String email) {
+  private void writeNewPost(int NoPoliza, String name, String email) {
     // Create new post at /user-posts/$userid/$postid and at
     // /posts/$postid simultaneously
     String key = mDatabase.child("contacts").child(getUid()).push().getKey();

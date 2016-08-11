@@ -21,14 +21,17 @@
   <string name="nav_home">Home</string>
   <string name="nav_people">Contactos</string>
   <string name="nav_settings">Ajustes</string>
-  <string name="nav_logout">Salir</string>
+  <string name="nav_logout">Cerrar Sesión</string>
 
   <!-- Strings related to Add new contact -->
 
   <string-array name="duration">
-    <item>Anual</item>
+    <item>Mensual</item>
     <item>Bimestral</item>
-    <item>Semanal</item>
+    <item>Trimestral</item>
+    <item>Cuatremestral</item>
+    <item>Semestral</item>
+    <item>Anual</item>
   </string-array>
 
 </resources>

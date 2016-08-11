@@ -40,7 +40,7 @@ public abstract class ListContactsFragment extends Fragment {
     mDatabase = FirebaseDatabase.getInstance().getReference();
     // [END create_database_reference]
 
-    mRecycler = (RecyclerView) rootView.findViewById(R.id.all_data_list);
+    mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
     //mRecycler.setHasFixedSize(true);
 
     return rootView;
@@ -59,7 +59,7 @@ public abstract class ListContactsFragment extends Fragment {
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
     mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_contants,
-        CalendarHolder.class, postsQuery) {
+      CalendarHolder.class, postsQuery) {
       @Override
       protected void populateViewHolder(final CalendarHolder viewHolder, final CalendarModel model, final int position) {
         final DatabaseReference postRef = getRef(position);
@@ -151,7 +151,7 @@ public abstract class ListContactsFragment extends Fragment {
   public abstract Query getQuery(DatabaseReference databaseReference);
 
 
-  public static class CalendarHolder  extends RecyclerView.ViewHolder {
+  public static class CalendarHolder extends RecyclerView.ViewHolder {
 
     public TextView nameView;
     public TextView subnameView;
@@ -159,15 +159,15 @@ public abstract class ListContactsFragment extends Fragment {
 
     public void bindToPost(CalendarModel post, View.OnClickListener starClickListener) {
       nameView.setText(post.Name);
-      subnameView.setText(post.NoPoliza);
+      subnameView.setText(String.valueOf(post.NoPoliza));
       iconView.setOnClickListener(starClickListener);
     }
 
     public CalendarHolder(View itemView) {
       super(itemView);
-      nameView = (TextView) itemView.findViewById(R.id.item_name);
-      subnameView = (TextView) itemView.findViewById(R.id.item_subname);
-      iconView = (ImageView) itemView.findViewById(R.id.item_icon);
+      nameView = (TextView)itemView.findViewById(R.id.item_name);
+      subnameView = (TextView)itemView.findViewById(R.id.item_subname);
+      iconView = (ImageView)itemView.findViewById(R.id.item_icon);
     }
   }
 }

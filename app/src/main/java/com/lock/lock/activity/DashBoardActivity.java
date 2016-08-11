@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.lock.lock.MyDatabase;
 import com.lock.lock.R;
 import com.lock.lock.fragment.MyContacts;
 import com.lock.lock.model.Empresa;
@@ -44,7 +45,6 @@ public class DashBoardActivity extends AppCompatActivity
   private DrawerLayout drawerLayout;
   private FragmentPagerAdapter mPagerAdapter;
   private ViewPager mViewPager;
-
   FirebaseDatabase mDatabase;
   DatabaseReference mEmpresas;
 
@@ -84,8 +84,7 @@ public class DashBoardActivity extends AppCompatActivity
 
     user = FirebaseAuth.getInstance().getCurrentUser();
 
-    mDatabase = FirebaseDatabase.getInstance();
-    mDatabase.setPersistenceEnabled(true);
+    mDatabase = MyDatabase.getInstance();
     mEmpresas = mDatabase.getReference("empresas");
     DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
     connectedRef.addValueEventListener(new ValueEventListener() {

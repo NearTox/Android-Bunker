@@ -8,85 +8,89 @@
   <android.support.design.widget.CoordinatorLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/app_bar_layout"/>
-    <ScrollView
-      android:layout_marginTop="?actionBarSize"
+    <LinearLayout
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-      <LinearLayout
+      android:layout_height="match_parent"
+      android:orientation="vertical">
+      <include layout="@layout/app_bar_layout"/>
+      <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="8dp">
-          <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Número de poliza"
-            android:inputType="number"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="8dp">
-          <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Nombre del cliente"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="8dp">
-          <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:drawableStart="@drawable/ic_event"
-            android:drawablePadding="6dp"
-            android:inputType="date"
-            android:focusable="false"
-            android:hint="Fecha"/>
-        </android.support.design.widget.TextInputLayout>
+        android:layout_height="wrap_content">
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
-          android:orientation="horizontal">
-          <Spinner
-            android:layout_width="0dp"
+          android:orientation="vertical"
+          android:padding="16dp">
+          <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="8dp"/>
-          <Spinner
-            android:layout_width="0dp"
+            android:layout_margin="8dp">
+            <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="Número de poliza"
+              android:inputType="number"/>
+          </android.support.design.widget.TextInputLayout>
+          <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="8dp"
-            android:entries="@array/duration"/>
+            android:layout_margin="8dp">
+            <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="Nombre del cliente"/>
+          </android.support.design.widget.TextInputLayout>
+          <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+            <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:drawableStart="@drawable/ic_event"
+              android:drawablePadding="6dp"
+              android:inputType="date"
+              android:focusable="false"
+              android:hint="Fecha"/>
+          </android.support.design.widget.TextInputLayout>
+          <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Spinner
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_margin="8dp"/>
+            <Spinner
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_margin="8dp"
+              android:entries="@array/duration"/>
+          </LinearLayout>
+          <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+            <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:inputType="textWebEmailAddress|textNoSuggestions"
+              android:hint="@string/prompt_email"/>
+          </android.support.design.widget.TextInputLayout>
+          <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+            <EditText
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:inputType="phone"
+              android:hint="Telefono"/>
+          </android.support.design.widget.TextInputLayout>
         </LinearLayout>
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="8dp">
-          <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textWebEmailAddress|textNoSuggestions"
-            android:hint="@string/prompt_email"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.design.widget.TextInputLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_margin="8dp">
-          <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            android:hint="Telefono"/>
-        </android.support.design.widget.TextInputLayout>
-      </LinearLayout>
-    </ScrollView>
+      </ScrollView>
+    </LinearLayout>
   </android.support.design.widget.CoordinatorLayout>
 </android.support.v4.widget.DrawerLayout>

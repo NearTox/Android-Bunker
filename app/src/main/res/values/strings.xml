@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Lock</string>
+  <string name="app_name" translatable="false">Bunker</string>
   <string name="title_activity_login">| Iniciar Sesión</string>
   <string name="title_activity_signup">| Registrarse</string>
 

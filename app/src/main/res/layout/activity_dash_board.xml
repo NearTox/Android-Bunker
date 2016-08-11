@@ -43,7 +43,7 @@
           android:layout_height="match_parent"
           tools:listitem="@layout/item_calendar_day"
           app:layoutManager="LinearLayoutManager"
-          />-->
+          />
         <ImageView
           android:layout_gravity="center"
           android:id="@+id/img_anim"
@@ -52,7 +52,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:contentDescription="@string/app_name"
-          android:background="@drawable/ic_account_box" />
+          android:background="@drawable/ic_account_box" />-->
         <android.support.v4.view.ViewPager
           android:id="@+id/container"
           android:layout_gravity="start"

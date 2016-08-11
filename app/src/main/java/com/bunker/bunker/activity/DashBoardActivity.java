@@ -1,4 +1,4 @@
-package com.lock.lock.activity;
+package com.bunker.bunker.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,12 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -32,10 +28,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.lock.lock.MyDatabase;
-import com.lock.lock.R;
-import com.lock.lock.fragment.MyContacts;
-import com.lock.lock.model.Empresa;
+import com.bunker.bunker.MyDatabase;
+import com.bunker.bunker.R;
+import com.bunker.bunker.fragment.MyCalendar;
+import com.bunker.bunker.fragment.MyContacts;
+import com.bunker.bunker.model.Empresa;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -56,7 +53,7 @@ public class DashBoardActivity extends AppCompatActivity
     try {
       // Create MD5 Hash
       MessageDigest digest = java.security.MessageDigest
-          .getInstance(MD5);
+        .getInstance(MD5);
       digest.update(s.getBytes());
       byte messageDigest[] = digest.digest();
 
@@ -109,7 +106,7 @@ public class DashBoardActivity extends AppCompatActivity
       public void onDataChange(DataSnapshot dataSnapshot) {
         Log.d(TAG, "There are " + dataSnapshot.getChildrenCount() + " blog posts");
         for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-          String name = (String) postSnapshot.child("Nombre").getValue();
+          String name = (String)postSnapshot.child("Nombre").getValue();
           Log.d(TAG, name);
           Empresa company = postSnapshot.getValue(Empresa.class);
           Log.d(TAG, company.toString());
@@ -178,12 +175,12 @@ public class DashBoardActivity extends AppCompatActivity
     mDatabase.addChildEventListener(childEventListener);*/
 
 
-    drawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+    drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 
-    Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_add_client);
+    FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab_add_client);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -198,18 +195,18 @@ public class DashBoardActivity extends AppCompatActivity
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
     View headerLayout = navigationView.inflateHeaderView(R.layout.navheader);
     if(user.getEmail() != null) {
-      TextView email = (TextView) headerLayout.findViewById(R.id.nav_email_view);
+      TextView email = (TextView)headerLayout.findViewById(R.id.nav_email_view);
       email.setText(user.getEmail());
     }
     if(user.getDisplayName() != null) {
-      TextView name = (TextView) headerLayout.findViewById(R.id.nav_name_view);
+      TextView name = (TextView)headerLayout.findViewById(R.id.nav_name_view);
       name.setText(user.getDisplayName());
     }
-    SimpleDraweeView draweeView = (SimpleDraweeView) headerLayout.findViewById(R.id.nav_imageView);
+    SimpleDraweeView draweeView = (SimpleDraweeView)headerLayout.findViewById(R.id.nav_imageView);
     RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
     roundingParams.setBorder(R.color.colorPrimaryDark, 1.0f);
     roundingParams.setRoundAsCircle(true);
@@ -227,10 +224,12 @@ public class DashBoardActivity extends AppCompatActivity
     // Create the adapter that will return a fragment for each section
     mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
       private final Fragment[] mFragments = new Fragment[]{
-          new MyContacts(),
+        new MyCalendar(),
+        new MyContacts(),
       };
       private final String[] mFragmentNames = new String[]{
-          "Contatctos",
+        "Calendario",
+        "Contatctos",
       };
 
       @Override
@@ -249,9 +248,9 @@ public class DashBoardActivity extends AppCompatActivity
       }
     };
     // Set up the ViewPager with the sections adapter.
-    mViewPager = (ViewPager) findViewById(R.id.container);
+    mViewPager = (ViewPager)findViewById(R.id.container);
     mViewPager.setAdapter(mPagerAdapter);
-    TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+    TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
     tabLayout.setupWithViewPager(mViewPager);
 
     //

@@ -1,13 +1,14 @@
-package com.lock.lock.recycler;
+package com.bunker.bunker.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -15,20 +16,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.lock.lock.R;
-import com.lock.lock.model.CalendarModel;
+import com.bunker.bunker.R;
+import com.bunker.bunker.activity.AddNewActivity;
+import com.bunker.bunker.model.CalendarModel;
 
-public abstract class ListContactsFragment extends Fragment {
-  private static final String TAG = "ListContactsFragment";
-
+public class MyContacts extends Fragment {
   private DatabaseReference mDatabase;
 
-  private FirebaseRecyclerAdapter<CalendarModel, CalendarHolder> mAdapter;
+  private FirebaseRecyclerAdapter<CalendarModel, ContactsHolder> mAdapter;
   private RecyclerView mRecycler;
   private LinearLayoutManager mManager;
 
-  public ListContactsFragment() {
-  }
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,10 +56,10 @@ public abstract class ListContactsFragment extends Fragment {
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
-    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_contants,
-      CalendarHolder.class, postsQuery) {
+    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(CalendarModel.class, R.layout.item_contants,
+      ContactsHolder.class, postsQuery) {
       @Override
-      protected void populateViewHolder(final CalendarHolder viewHolder, final CalendarModel model, final int position) {
+      protected void populateViewHolder(final ContactsHolder viewHolder, final CalendarModel model, final int position) {
         final DatabaseReference postRef = getRef(position);
 
         // Set click listener for the whole post view
@@ -70,9 +68,9 @@ public abstract class ListContactsFragment extends Fragment {
           @Override
           public void onClick(View v) {
             // Launch PostDetailActivity
-            //Intent intent = new Intent(getActivity(), PostDetailActivity.class);
-            //intent.putExtra(PostDetailActivity.EXTRA_POST_KEY, postKey);
-            //startActivity(intent);
+            Intent intent = new Intent(getActivity(), AddNewActivity.class);
+            intent.putExtra(AddNewActivity.EXTRA_POST_KEY, postKey);
+            startActivity(intent);
           }
         });
 
@@ -148,26 +146,34 @@ public abstract class ListContactsFragment extends Fragment {
     return FirebaseAuth.getInstance().getCurrentUser().getUid();
   }
 
-  public abstract Query getQuery(DatabaseReference databaseReference);
-
-
-  public static class CalendarHolder extends RecyclerView.ViewHolder {
+  public static class ContactsHolder extends RecyclerView.ViewHolder {
 
     public TextView nameView;
     public TextView subnameView;
-    public ImageView iconView;
+    public AppCompatImageView iconView;
 
     public void bindToPost(CalendarModel post, View.OnClickListener starClickListener) {
-      nameView.setText(post.Name);
+      nameView.setText(post.Nombre);
       subnameView.setText(String.valueOf(post.NoPoliza));
       iconView.setOnClickListener(starClickListener);
     }
 
-    public CalendarHolder(View itemView) {
+    public ContactsHolder(View itemView) {
       super(itemView);
       nameView = (TextView)itemView.findViewById(R.id.item_name);
       subnameView = (TextView)itemView.findViewById(R.id.item_subname);
-      iconView = (ImageView)itemView.findViewById(R.id.item_icon);
+      iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
     }
+  }
+
+  public MyContacts() {
+  }
+
+  public Query getQuery(DatabaseReference databaseReference) {
+    // All my posts
+    DatabaseReference myData = databaseReference.child("contacts")
+      .child(getUid());
+    myData.keepSynced(true);
+    return myData.orderByChild("Name");
   }
 }

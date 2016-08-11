@@ -1,4 +1,4 @@
-package com.lock.lock.model;
+package com.bunker.bunker.model;
 
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;

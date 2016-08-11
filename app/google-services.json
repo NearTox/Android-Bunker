@@ -8,44 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:210942940392:android:50c9d57dfc070c85",
+        "mobilesdk_app_id": "1:210942940392:android:466b41229ea70f71",
         "android_client_info": {
-          "package_name": "com.lock.loc"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "210942940392-4c5gc3k1q9m6tm1eeuehi72v2mm296ip.apps.googleusercontent.com",
-          "client_type": 3
-        },
-        {
-          "client_id": "210942940392-mll20k0kubne1rvrrq6dhcvjir59eofn.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCXcQImFXDuKoZzFzZycGRAHvt3Pnj8Y1o"
-        }
-      ],
-      "services": {
-        "analytics_service": {
-          "status": 1
-        },
-        "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:210942940392:android:4e971aff999eb772",
-        "android_client_info": {
-          "package_name": "com.lock.lock"
+          "package_name": "com.bunker.bunker"
         }
       },
       "oauth_client": [

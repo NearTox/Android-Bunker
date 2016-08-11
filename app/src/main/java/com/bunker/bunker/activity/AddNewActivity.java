@@ -1,31 +1,42 @@
-package com.lock.lock.activity;
+package com.bunker.bunker.activity;
 
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.lock.lock.MyDatabase;
-import com.lock.lock.R;
-import com.lock.lock.model.CalendarModel;
+import com.bunker.bunker.MyDatabase;
+import com.bunker.bunker.R;
+import com.bunker.bunker.model.CalendarModel;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class AddNewActivity extends AppCompatActivity {
+  public static final String EXTRA_POST_KEY = "EXTRA_POST_KEY";
+  private static final String TAG = "AddNewActivity";
+  private String mPostKey = "";
   private DatabaseReference mDatabase;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_add_new);
+
     mDatabase = MyDatabase.getInstance().getReference();
-    setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+
+    if(savedInstanceState != null) {
+      if(savedInstanceState.getString(EXTRA_POST_KEY) != null) {
+        mPostKey = savedInstanceState.getString(EXTRA_POST_KEY);
+        Log.i(TAG, EXTRA_POST_KEY + ": " + mPostKey);
+      }
+    }
+
+    setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     getSupportActionBar().setTitle("Nueva Poliza");
 
@@ -43,7 +54,7 @@ public class AddNewActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     if(id == android.R.id.home) {
-      writeNewPost(1234,"567","89");
+      writeNewPost(1234, "567", "89");
       finish();
       return true;
     } else if(id == R.id.menu_add_new_descartar) {
@@ -59,7 +70,7 @@ public class AddNewActivity extends AppCompatActivity {
     String key = mDatabase.child("contacts").child(getUid()).push().getKey();
     CalendarModel contact = new CalendarModel();
     contact.NoPoliza = NoPoliza;
-    contact.Name = name;
+    contact.Nombre = name;
     contact.Email = email;
     Map<String, Object> postValues = contact.toMap();
 

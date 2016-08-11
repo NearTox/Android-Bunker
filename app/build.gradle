@@ -6,8 +6,9 @@ android {
 
   defaultConfig {
     vectorDrawables.useSupportLibrary true
-    applicationId "com.lock.lock"
-    minSdkVersion 17
+    applicationId "com.bunker.bunker"
+    //minSdkVersion 17
+    minSdkVersion 21
     targetSdkVersion 24
     versionCode 1
     versionName "1.0"

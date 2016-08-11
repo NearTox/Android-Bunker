@@ -1,4 +1,4 @@
-package com.lock.lock.activity;
+package com.bunker.bunker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseUser;
-import com.lock.lock.R;
+import com.bunker.bunker.R;
 
 public class MainActivity extends BaseAuth
 implements View.OnClickListener {

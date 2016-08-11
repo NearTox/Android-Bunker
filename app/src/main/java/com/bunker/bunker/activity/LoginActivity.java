@@ -1,4 +1,4 @@
-package com.lock.lock.activity;
+package com.bunker.bunker.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,33 +6,29 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthInvalidUserException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
-import com.lock.lock.EmailFormater;
-import com.lock.lock.R;
+import com.bunker.bunker.EmailFormater;
+import com.bunker.bunker.R;
 
-public class SignupActivity extends BaseAuth {
-  private static final String TAG = SignupActivity.class.getSimpleName();
+
+
+public class LoginActivity extends BaseAuth {
+  private static final String TAG = LoginActivity.class.getSimpleName();
 
   // UI references.
-  private EditText mEmailView;
-  private EditText mPasswordView;
-  private EditText mNameView;
+  private AppCompatEditText mEmailView;
+  private AppCompatEditText mPasswordView;
 
   private View mProgressView;
   private View mLoginFormView;
@@ -42,53 +38,56 @@ public class SignupActivity extends BaseAuth {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_signup);
+    setContentView(R.layout.activity_login);
 
     Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
     setSupportActionBar(myToolbar);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle(getString(R.string.action_sign_up));
+    getSupportActionBar().setTitle(getString(R.string.action_sign_in));
 
     // Set up the login form.
     //EditText
-    mPasswordView = (EditText) findViewById(R.id.sign_up_form_password);
-    mEmailView = (EditText) findViewById(R.id.sign_up_form_email);
-    mNameView = (EditText) findViewById(R.id.sign_up_form_name);
+    mPasswordView = (AppCompatEditText)findViewById(R.id.login_form_password);
+    mEmailView = (AppCompatEditText)findViewById(R.id.login_form_email);
 
     //View
-    mLoginFormView = findViewById(R.id.sign_up_form);
-    mProgressView = findViewById(R.id.sign_up_progress);
+    mLoginFormView = findViewById(R.id.login_form);
+    mProgressView = findViewById(R.id.login_progress);
 
     //Button
-    Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
+    Button mEmailSignInButton = (Button) findViewById(R.id.login_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         attemptLogin();
       }
     });
-  }
+    Button mEmailRecover = (Button) findViewById(R.id.login_form_recover);
+    mEmailRecover.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        /*
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+String emailAddress = "user@example.com";
 
+auth.sendPasswordResetEmail(emailAddress)
+        .addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if (task.isSuccessful()) {
+                    Log.d(TAG, "Email sent.");
+                }
+            }
+        });
+         */
+      }
+    });
+
+  }
 
   @Override
   protected void onLogIn(@NonNull FirebaseUser user) {
-    String name = mNameView.getText().toString().trim();
-    if(!name.isEmpty() && mAuthTask) {
-      UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-        .setDisplayName(name)
-        .build();
-
-      user.updateProfile(profileUpdates)
-        .addOnCompleteListener(new OnCompleteListener<Void>() {
-          @Override
-          public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful()) {
-              Log.d(TAG, "User profile updated.");
-            }
-            finish();
-          }
-        });
-    }
+    finish();
   }
 
   @Override
@@ -136,30 +135,26 @@ public class SignupActivity extends BaseAuth {
       // form field with an error.
       focusView.requestFocus();
     } else {
+      // Show a progress spinner, and kick off a background task to
+      // perform the user login attempt.
+      showProgress(true);
       /*View cfocus = this.getCurrentFocus();
       if(cfocus != null) {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
       }*/
-      // Show a progress spinner, and kick off a background task to
-      // perform the user login attempt.
-      showProgress(true);
-
-
-      // TODO: attempt authentication against a network service.
       mAuthTask = true;
       email = email_info.GetEmail();
-      mAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+      mAuth.signInWithEmailAndPassword(email, password)
+        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
           @Override
           public void onComplete(@NonNull Task<AuthResult> task) {
-            Log.d(TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
+            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
             // If sign in fails, display a message to the user. If sign in succeeds
             // the auth state listener will be notified and logic to handle the
             // signed in user can be handled in the listener.
             mAuthTask = false;
-
             if(!task.isSuccessful()) {
               showProgress(false);
               /*try {
@@ -200,6 +195,9 @@ public class SignupActivity extends BaseAuth {
     }
   }
 
+  /**
+   * Shows the progress UI and hides the login form.
+   */
   @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
   private void showProgress(final boolean show) {
     // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow

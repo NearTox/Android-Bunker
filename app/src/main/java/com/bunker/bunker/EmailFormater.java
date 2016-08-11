@@ -1,4 +1,4 @@
-package com.lock.lock;
+package com.bunker.bunker;
 
 public class EmailFormater {
   private String mUserName = "";

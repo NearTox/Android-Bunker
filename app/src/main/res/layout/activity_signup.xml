@@ -71,7 +71,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:imeOptions="actionNext"
@@ -88,7 +88,7 @@
               android:layout_height="wrap_content"
               android:layout_margin="4dp"
               android:gravity="center">
-              <EditText
+              <android.support.v7.widget.AppCompatEditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:imeOptions="actionNext"
@@ -105,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center">
-                <EditText
+                <android.support.v7.widget.AppCompatEditText
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:imeOptions="actionNext"

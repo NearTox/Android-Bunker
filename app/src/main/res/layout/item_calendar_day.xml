@@ -6,11 +6,11 @@
   android:id="@+id/card_view"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:layout_margin="16dp"
+  android:layout_margin="2dp"
 
   android:foreground="?attr/selectableItemBackground"
   card_view:cardBackgroundColor="@android:color/white"
-  card_view:cardCornerRadius="8dp">
+  card_view:cardCornerRadius="4dp">
 
   <LinearLayout
     android:layout_width="match_parent"
@@ -24,17 +24,17 @@
       android:padding="8dp">
 
       <TextView
+        android:id="@+id/item_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_marginEnd="6dp"
-        android:textSize="20sp"
-        android:text="23" />
+        android:textSize="20sp"/>
       <TextView
+        android:id="@+id/item_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Janury-2016" />
+        android:textSize="16sp"/>
     </LinearLayout>
     <LinearLayout
       android:orientation="vertical"
@@ -45,7 +45,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="8dp">
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageView
+          android:id="@+id/item_icon"
           android:layout_width="48dp"
           android:layout_height="48dp"
           android:layout_marginEnd="8dp"
@@ -55,16 +56,16 @@
           android:layout_height="wrap_content"
           android:orientation="vertical">
           <TextView
+            android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginBottom="2dp"
-            android:text="Lorem"/>
+            android:layout_marginBottom="2dp"/>
           <TextView
+            android:id="@+id/item_subname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Lorem"/>
+            android:layout_height="wrap_content"/>
         </LinearLayout>
       </LinearLayout>
     </LinearLayout>

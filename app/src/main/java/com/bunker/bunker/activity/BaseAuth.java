@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 public abstract class BaseAuth extends AppCompatActivity
   implements FirebaseAuth.AuthStateListener {
   private static final String TAG = MainActivity.class.getName();
@@ -28,7 +29,7 @@ public abstract class BaseAuth extends AppCompatActivity
       mUniqueLogOut = true;
     } else {
       mIsUserLogging = false;
-      if(mUniqueLogOut){
+      if(mUniqueLogOut) {
         onLogOut();
         mUniqueLogOut = false;
       }
@@ -62,5 +63,6 @@ public abstract class BaseAuth extends AppCompatActivity
   }
 
   abstract protected void onLogIn(@NonNull FirebaseUser user);
+
   abstract protected void onLogOut();
 }

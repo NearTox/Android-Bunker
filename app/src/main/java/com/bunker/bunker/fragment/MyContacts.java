@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,22 +12,18 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 public class MyContacts extends Fragment {
-  private static final String TAG ="MyContacts";
+  private static final String TAG = "MyContacts";
   private SparseBooleanArray SelectedItems;
   private DatabaseReference mDatabase;
 
@@ -75,13 +72,12 @@ private void myToggleSelection(int idx) {
    actionMode.setTitle(title);
 }*/
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     //super.onCreateView(inflater, container, savedInstanceState);
     View rootView = inflater.inflate(R.layout.fragment_all_data, container, false);
 
     // [START create_database_reference]
-    mDatabase = FirebaseDatabase.getInstance().getReference();
+    mDatabase = MyDatabase.getInstance().getReference();
     // [END create_database_reference]
 
     mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
@@ -102,8 +98,7 @@ private void myToggleSelection(int idx) {
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
-    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(CalendarModel.class, R.layout.item_contants,
-      ContactsHolder.class, postsQuery) {
+    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(CalendarModel.class, R.layout.item_contants, ContactsHolder.class, postsQuery) {
       @Override
       protected void populateViewHolder(final ContactsHolder viewHolder, final CalendarModel model, final int position) {
         final DatabaseReference postRef = getRef(position);
@@ -125,7 +120,7 @@ private void myToggleSelection(int idx) {
           @Override
           public boolean onLongClick(View view) {
             //toggleSelection(mRecycler.getChildAdapterPosition(view));
-            Log.i(TAG, "onLongClick: "+mRecycler.getChildAdapterPosition(view));
+            Log.i(TAG, "onLongClick: " + mRecycler.getChildAdapterPosition(view));
             return false;
           }
 
@@ -203,8 +198,8 @@ private void myToggleSelection(int idx) {
 
   public static class ContactsHolder extends RecyclerView.ViewHolder {
 
-    public TextView nameView;
-    public TextView subnameView;
+    public AppCompatTextView nameView;
+    public AppCompatTextView subnameView;
     public AppCompatImageView iconView;
 
     public void bindToPost(CalendarModel post, View.OnClickListener starClickListener) {
@@ -215,8 +210,8 @@ private void myToggleSelection(int idx) {
 
     public ContactsHolder(View itemView) {
       super(itemView);
-      nameView = (TextView)itemView.findViewById(R.id.item_name);
-      subnameView = (TextView)itemView.findViewById(R.id.item_subname);
+      nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);
+      subnameView = (AppCompatTextView)itemView.findViewById(R.id.item_subname);
       iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
     }
   }
@@ -226,8 +221,7 @@ private void myToggleSelection(int idx) {
 
   public Query getQuery(DatabaseReference databaseReference) {
     // All my posts
-    DatabaseReference myData = databaseReference.child("contacts")
-      .child(getUid());
+    DatabaseReference myData = databaseReference.child("contacts").child(getUid());
     myData.keepSynced(true);
     return myData.orderByChild("Name");
   }

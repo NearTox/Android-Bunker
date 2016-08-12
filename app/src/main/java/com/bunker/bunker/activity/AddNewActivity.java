@@ -1,17 +1,19 @@
 package com.bunker.bunker.activity;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.model.CalendarModel;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +60,29 @@ public class AddNewActivity extends AppCompatActivity {
       finish();
       return true;
     } else if(id == R.id.menu_add_new_descartar) {
+      AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AppDialogTheme);
+      builder.setTitle("Title");
+      builder.setMessage("Message");
 
+      String positiveText = getString(android.R.string.ok);
+      builder.setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          // positive button logic
+        }
+      });
+
+      String negativeText = getString(android.R.string.cancel);
+      builder.setNegativeButton(negativeText, new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+          // negative button logic
+        }
+      });
+
+      AlertDialog dialog = builder.create();
+      // display dialog
+      dialog.show();
       return true;
     }
     return super.onOptionsItemSelected(item);

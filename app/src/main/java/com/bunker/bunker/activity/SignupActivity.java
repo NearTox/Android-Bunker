@@ -1,26 +1,27 @@
 package com.bunker.bunker.activity;
 
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.bunker.bunker.EmailFormater;
+import com.bunker.bunker.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.bunker.bunker.EmailFormater;
-import com.bunker.bunker.R;
 
 public class SignupActivity extends BaseAuth {
   private static final String TAG = SignupActivity.class.getSimpleName();
@@ -47,16 +48,16 @@ public class SignupActivity extends BaseAuth {
 
     // Set up the login form.
     //EditText
-    mPasswordView = (AppCompatEditText) findViewById(R.id.sign_up_form_password);
-    mEmailView = (AppCompatEditText) findViewById(R.id.sign_up_form_email);
-    mNameView = (AppCompatEditText) findViewById(R.id.sign_up_form_name);
+    mPasswordView = (AppCompatEditText)findViewById(R.id.sign_up_form_password);
+    mEmailView = (AppCompatEditText)findViewById(R.id.sign_up_form_email);
+    mNameView = (AppCompatEditText)findViewById(R.id.sign_up_form_name);
 
     //View
     mLoginFormView = findViewById(R.id.sign_up_form);
     mProgressView = findViewById(R.id.sign_up_progress);
 
     //Button
-    Button mEmailSignInButton = (Button) findViewById(R.id.sign_up_form_button);
+    AppCompatButton mEmailSignInButton = (AppCompatButton)findViewById(R.id.sign_up_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -70,26 +71,23 @@ public class SignupActivity extends BaseAuth {
   protected void onLogIn(@NonNull FirebaseUser user) {
     String name = mNameView.getText().toString().trim();
     if(!name.isEmpty() && mAuthTask) {
-      UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
-        .setDisplayName(name)
-        .build();
+      UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name).build();
 
-      user.updateProfile(profileUpdates)
-        .addOnCompleteListener(new OnCompleteListener<Void>() {
-          @Override
-          public void onComplete(@NonNull Task<Void> task) {
-            if(task.isSuccessful()) {
-              Log.d(TAG, "User profile updated.");
-            }
-            finish();
+      user.updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+        @Override
+        public void onComplete(@NonNull Task<Void> task) {
+          if(task.isSuccessful()) {
+            Log.d(TAG, "User profile updated.");
           }
-        });
+          finish();
+        }
+      });
     }
   }
 
   @Override
   protected void onLogOut() {
-    Log.e(TAG,"Must only occur one time");
+    Log.e(TAG, "Must only occur one time");
   }
 
   private void attemptLogin() {
@@ -145,19 +143,18 @@ public class SignupActivity extends BaseAuth {
       // TODO: attempt authentication against a network service.
       mAuthTask = true;
       email = email_info.GetEmail();
-      mAuth.createUserWithEmailAndPassword(email, password)
-        .addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
-          @Override
-          public void onComplete(@NonNull Task<AuthResult> task) {
-            Log.d(TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
+      mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(SignupActivity.this, new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+          Log.d(TAG, "signInWithEmail: onComplete:" + task.isSuccessful());
 
-            // If sign in fails, display a message to the user. If sign in succeeds
-            // the auth state listener will be notified and logic to handle the
-            // signed in user can be handled in the listener.
-            mAuthTask = false;
+          // If sign in fails, display a message to the user. If sign in succeeds
+          // the auth state listener will be notified and logic to handle the
+          // signed in user can be handled in the listener.
+          mAuthTask = false;
 
-            if(!task.isSuccessful()) {
-              showProgress(false);
+          if(!task.isSuccessful()) {
+            showProgress(false);
               /*try {
                 throw task.getException();
               } catch(FirebaseAuthWeakPasswordException e) {
@@ -175,24 +172,24 @@ public class SignupActivity extends BaseAuth {
               } catch(Exception e) {
                 Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
               }*/
-              Exception theException = task.getException();
-              if(theException != null) {
-                if(theException instanceof FirebaseAuthException) {
-                  FirebaseAuthException exc = (FirebaseAuthException) theException;
-                  Log.e(TAG, "Exception: " + exc.getErrorCode());
-                } else {
-                  Log.e(TAG, "Exception: " + theException.getMessage());
-                }
-
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-
+            Exception theException = task.getException();
+            if(theException != null) {
+              if(theException instanceof FirebaseAuthException) {
+                FirebaseAuthException exc = (FirebaseAuthException)theException;
+                Log.e(TAG, "Exception: " + exc.getErrorCode());
+              } else {
+                Log.e(TAG, "Exception: " + theException.getMessage());
               }
-            }
 
-            // ...
+              mPasswordView.setError(getString(R.string.error_incorrect_password));
+              mPasswordView.requestFocus();
+
+            }
           }
-        });
+
+          // ...
+        }
+      });
     }
   }
 
@@ -205,8 +202,7 @@ public class SignupActivity extends BaseAuth {
       int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-      mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-          show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+      mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
           mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -214,8 +210,7 @@ public class SignupActivity extends BaseAuth {
       });
 
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-      mProgressView.animate().setDuration(shortAnimTime).alpha(
-          show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+      mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
           mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);

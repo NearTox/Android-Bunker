@@ -4,21 +4,21 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
+import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 
 public class MyCalendar extends Fragment {
 
@@ -30,13 +30,12 @@ public class MyCalendar extends Fragment {
 
 
   @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     //super.onCreateView(inflater, container, savedInstanceState);
     View rootView = inflater.inflate(R.layout.fragment_all_data, container, false);
 
     // [START create_database_reference]
-    mDatabase = FirebaseDatabase.getInstance().getReference();
+    mDatabase = MyDatabase.getInstance().getReference();
     // [END create_database_reference]
 
     mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
@@ -57,8 +56,7 @@ public class MyCalendar extends Fragment {
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
-    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_calendar_day,
-      CalendarHolder.class, postsQuery) {
+    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_calendar_day, CalendarHolder.class, postsQuery) {
       @Override
       protected void populateViewHolder(final CalendarHolder viewHolder, final CalendarModel model, final int position) {
         final DatabaseReference postRef = getRef(position);
@@ -149,10 +147,10 @@ public class MyCalendar extends Fragment {
 
   public static class CalendarHolder extends RecyclerView.ViewHolder {
 
-    public TextView dayView;
-    public TextView monthView;
-    public TextView nameView;
-    public TextView subnameView;
+    public AppCompatTextView dayView;
+    public AppCompatTextView monthView;
+    public AppCompatTextView nameView;
+    public AppCompatTextView subnameView;
     public AppCompatImageView iconView;
 
     public void bindToPost(CalendarModel post, View.OnClickListener starClickListener) {
@@ -165,10 +163,10 @@ public class MyCalendar extends Fragment {
 
     public CalendarHolder(View itemView) {
       super(itemView);
-      dayView= (TextView)itemView.findViewById(R.id.item_day);
-      monthView= (TextView)itemView.findViewById(R.id.item_month);
-      nameView = (TextView)itemView.findViewById(R.id.item_name);
-      subnameView = (TextView)itemView.findViewById(R.id.item_subname);
+      dayView = (AppCompatTextView)itemView.findViewById(R.id.item_day);
+      monthView = (AppCompatTextView)itemView.findViewById(R.id.item_month);
+      nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);
+      subnameView = (AppCompatTextView)itemView.findViewById(R.id.item_subname);
       iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
     }
   }
@@ -178,8 +176,7 @@ public class MyCalendar extends Fragment {
 
   public Query getQuery(DatabaseReference databaseReference) {
     // All my posts
-    DatabaseReference myData = databaseReference.child("contacts")
-      .child(getUid());
+    DatabaseReference myData = databaseReference.child("contacts").child(getUid());
     myData.keepSynced(true);
     return myData.orderByChild("Day");
   }

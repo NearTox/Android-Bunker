@@ -30,7 +30,7 @@
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:contentDescription="@string/app_name"
-            android:background="@drawable/bunker_logo_3"/>
+            android:background="@mipmap/ic_launcher"/>
           <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,6 @@
                 <android.support.v7.widget.AppCompatEditText
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:imeOptions="actionNext"
                   android:inputType="textPersonName"
                   android:minWidth="350dp"
                   android:drawableStart="@drawable/ic_account_box"
@@ -89,7 +88,6 @@
               <android.support.v7.widget.AppCompatEditText
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:imeOptions="actionNext"
                 android:inputType="textEmailAddress|textNoSuggestions"
                 android:minWidth="350dp"
                 android:drawableStart="@drawable/ic_mail"
@@ -106,7 +104,6 @@
                 <android.support.v7.widget.AppCompatEditText
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:imeOptions="actionNext"
                   android:inputType="textPassword"
                   android:minWidth="350dp"
                   android:drawableStart="@drawable/ic_lock"

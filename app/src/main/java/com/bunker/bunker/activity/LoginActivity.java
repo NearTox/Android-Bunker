@@ -6,21 +6,19 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
+import com.bunker.bunker.EmailFormater;
+import com.bunker.bunker.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
-import com.bunker.bunker.EmailFormater;
-import com.bunker.bunker.R;
-
 
 
 public class LoginActivity extends BaseAuth {
@@ -55,14 +53,14 @@ public class LoginActivity extends BaseAuth {
     mProgressView = findViewById(R.id.login_progress);
 
     //Button
-    Button mEmailSignInButton = (Button) findViewById(R.id.login_form_button);
+    AppCompatButton mEmailSignInButton = (AppCompatButton)findViewById(R.id.login_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         attemptLogin();
       }
     });
-    Button mEmailRecover = (Button) findViewById(R.id.login_form_recover);
+    AppCompatButton mEmailRecover = (AppCompatButton)findViewById(R.id.login_form_recover);
     mEmailRecover.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -92,7 +90,7 @@ auth.sendPasswordResetEmail(emailAddress)
 
   @Override
   protected void onLogOut() {
-    Log.e(TAG,"Must only occur one time");
+    Log.e(TAG, "Must only occur one time");
   }
 
   private void attemptLogin() {
@@ -145,18 +143,17 @@ auth.sendPasswordResetEmail(emailAddress)
       }*/
       mAuthTask = true;
       email = email_info.GetEmail();
-      mAuth.signInWithEmailAndPassword(email, password)
-        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-          @Override
-          public void onComplete(@NonNull Task<AuthResult> task) {
-            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+      mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        @Override
+        public void onComplete(@NonNull Task<AuthResult> task) {
+          Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-            // If sign in fails, display a message to the user. If sign in succeeds
-            // the auth state listener will be notified and logic to handle the
-            // signed in user can be handled in the listener.
-            mAuthTask = false;
-            if(!task.isSuccessful()) {
-              showProgress(false);
+          // If sign in fails, display a message to the user. If sign in succeeds
+          // the auth state listener will be notified and logic to handle the
+          // signed in user can be handled in the listener.
+          mAuthTask = false;
+          if(!task.isSuccessful()) {
+            showProgress(false);
               /*try {
                 throw task.getException();
               } catch(FirebaseAuthWeakPasswordException e) {
@@ -174,24 +171,24 @@ auth.sendPasswordResetEmail(emailAddress)
               } catch(Exception e) {
                 Log.e(TAG, "FirebaseAuthException: " + e.getMessage());
               }*/
-              Exception theException = task.getException();
-              if(theException != null) {
-                if(theException instanceof FirebaseAuthException) {
-                  FirebaseAuthException exc = (FirebaseAuthException) theException;
-                  Log.e(TAG, "Exception: " + exc.getErrorCode());
-                } else {
-                  Log.e(TAG, "Exception: " + theException.getMessage());
-                }
-
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-
+            Exception theException = task.getException();
+            if(theException != null) {
+              if(theException instanceof FirebaseAuthException) {
+                FirebaseAuthException exc = (FirebaseAuthException)theException;
+                Log.e(TAG, "Exception: " + exc.getErrorCode());
+              } else {
+                Log.e(TAG, "Exception: " + theException.getMessage());
               }
-            }
 
-            // ...
+              mPasswordView.setError(getString(R.string.error_incorrect_password));
+              mPasswordView.requestFocus();
+
+            }
           }
-        });
+
+          // ...
+        }
+      });
     }
   }
 
@@ -207,8 +204,7 @@ auth.sendPasswordResetEmail(emailAddress)
       int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-      mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-          show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+      mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
         @Override
         public void onAnimationEnd(Animator animation) {
           mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -216,13 +212,13 @@ auth.sendPasswordResetEmail(emailAddress)
       });
 
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-      mProgressView.animate().setDuration(shortAnimTime).alpha(
-          show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-      });
+      mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).
+        setListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+          }
+        });
     } else {
       // The ViewPropertyAnimator APIs are not available, so simply show
       // and hide the relevant UI components.

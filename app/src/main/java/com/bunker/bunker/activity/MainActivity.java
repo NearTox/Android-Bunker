@@ -3,12 +3,12 @@ package com.bunker.bunker.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 
-import com.google.firebase.auth.FirebaseUser;
 import com.bunker.bunker.R;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends BaseAuth
 implements View.OnClickListener {
@@ -33,8 +33,8 @@ implements View.OnClickListener {
     setContentView(R.layout.activity_main);
 
     // Buttons
-    Button mIniciar = (Button) findViewById(R.id.main_iniciar);
-    Button mRegistar = (Button) findViewById(R.id.main_registro);
+    AppCompatButton mIniciar = (AppCompatButton)findViewById(R.id.main_iniciar);
+    AppCompatButton mRegistar = (AppCompatButton)findViewById(R.id.main_registro);
     mIniciar.setOnClickListener(this);
     mRegistar.setOnClickListener(this);
 

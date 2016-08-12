@@ -1,7 +1,9 @@
 package com.bunker.bunker.activity;
 
+
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -11,13 +13,17 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
+import com.bunker.bunker.MyDatabase;
+import com.bunker.bunker.R;
+import com.bunker.bunker.fragment.MyCalendar;
+import com.bunker.bunker.fragment.MyContacts;
+import com.bunker.bunker.model.Empresa;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -28,11 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.bunker.bunker.MyDatabase;
-import com.bunker.bunker.R;
-import com.bunker.bunker.fragment.MyCalendar;
-import com.bunker.bunker.fragment.MyContacts;
-import com.bunker.bunker.model.Empresa;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -52,8 +54,7 @@ public class DashBoardActivity extends AppCompatActivity
     final String MD5 = "MD5";
     try {
       // Create MD5 Hash
-      MessageDigest digest = java.security.MessageDigest
-        .getInstance(MD5);
+      MessageDigest digest = java.security.MessageDigest.getInstance(MD5);
       digest.update(s.getBytes());
       byte messageDigest[] = digest.digest();
 
@@ -83,7 +84,7 @@ public class DashBoardActivity extends AppCompatActivity
 
     mDatabase = MyDatabase.getInstance();
     mEmpresas = mDatabase.getReference("empresas");
-    DatabaseReference connectedRef = FirebaseDatabase.getInstance().getReference(".info/connected");
+    DatabaseReference connectedRef = mDatabase.getReference(".info/connected");
     connectedRef.addValueEventListener(new ValueEventListener() {
       @Override
       public void onDataChange(DataSnapshot snapshot) {
@@ -199,11 +200,11 @@ public class DashBoardActivity extends AppCompatActivity
     navigationView.setNavigationItemSelectedListener(this);
     View headerLayout = navigationView.inflateHeaderView(R.layout.navheader);
     if(user.getEmail() != null) {
-      TextView email = (TextView)headerLayout.findViewById(R.id.nav_email_view);
+      AppCompatTextView email = (AppCompatTextView)headerLayout.findViewById(R.id.nav_email_view);
       email.setText(user.getEmail());
     }
     if(user.getDisplayName() != null) {
-      TextView name = (TextView)headerLayout.findViewById(R.id.nav_name_view);
+      AppCompatTextView name = (AppCompatTextView)headerLayout.findViewById(R.id.nav_name_view);
       name.setText(user.getDisplayName());
     }
     SimpleDraweeView draweeView = (SimpleDraweeView)headerLayout.findViewById(R.id.nav_imageView);
@@ -223,14 +224,8 @@ public class DashBoardActivity extends AppCompatActivity
 
     // Create the adapter that will return a fragment for each section
     mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
-      private final Fragment[] mFragments = new Fragment[]{
-        new MyCalendar(),
-        new MyContacts(),
-      };
-      private final String[] mFragmentNames = new String[]{
-        "Calendario",
-        "Contatctos",
-      };
+      private final Fragment[] mFragments = new Fragment[]{new MyCalendar(), new MyContacts(),};
+      private final String[] mFragmentNames = new String[]{"Calendario", "Contatctos",};
 
       @Override
       public Fragment getItem(int position) {

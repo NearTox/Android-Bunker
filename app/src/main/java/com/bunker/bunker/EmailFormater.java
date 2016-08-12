@@ -40,7 +40,7 @@ public class EmailFormater {
         mHost = ss.toString();
       }
       mIsValid = !isEmpy && !mUserName.isEmpty() && second.length != 0;
-    }else {
+    } else {
       mIsValid = false;
     }
   }

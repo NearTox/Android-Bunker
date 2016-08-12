@@ -20,12 +20,13 @@ public class CalendarModel {
   public String Telefono;
   public String Email;
   public boolean HasStar;
-  public String Compañia;
+  public String Compania;
 
   // Monthly 1-12()
   public int Plan;
 
-  public CalendarModel() {  }
+  public CalendarModel() {
+  }
 
   @Exclude
   public Map<String, Object> toMap() {
@@ -33,15 +34,14 @@ public class CalendarModel {
     result.put("NoPoliza", NoPoliza);
     result.put("Nombre", Nombre);
     result.put("Beneficiario", Beneficiario);
-    result.put("Monto",Monto);
-    result.put("Dia",Dia);
-    result.put("Mes",Mes);
+    result.put("Monto", Monto);
+    result.put("Dia", Dia);
+    result.put("Mes", Mes);
     result.put("Telefono", Telefono);
     result.put("Email", Email);
     result.put("HasStar", HasStar);
-    result.put("Compañia", Compañia);
+    result.put("Compania", Compania);
     result.put("Plan", Plan);
     return result;
   }
-
 }

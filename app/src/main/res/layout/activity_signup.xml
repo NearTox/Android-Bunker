@@ -14,33 +14,31 @@
       android:layout_width="match_parent"
       android:layout_height="match_parent"
       android:orientation="vertical">
-      <include layout="@layout/app_bar_layout"/>
+      <!--<include layout="@layout/app_bar_layout"/>-->
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:gravity="center">
-        <!--<LinearLayout
+        <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
           android:minHeight="115dp"
           android:gravity="center">
-          <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+          <android.support.v7.widget.AppCompatImageView
+            android:layout_width="85dp"
+            android:layout_height="85dp"
             android:contentDescription="@string/app_name"
-            android:background="@drawable/placeholder"/>
-          <TextView
+            android:background="@drawable/bunker_logo_3"/>
+          <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/title_activity_signup"
             android:textStyle="bold"
             android:textSize="30sp"/>
-        </LinearLayout>-->
+        </LinearLayout>
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="0dp"
@@ -117,7 +115,7 @@
                   android:hint="@string/prompt_password"
                   android:maxLines="1"/>
               </android.support.design.widget.TextInputLayout>
-              <Button
+              <android.support.v7.widget.AppCompatButton
                 android:id="@+id/sign_up_form_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

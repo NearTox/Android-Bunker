@@ -40,10 +40,10 @@ public class LoginActivity extends BaseAuth {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
 
-    Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
-    setSupportActionBar(myToolbar);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle(getString(R.string.action_sign_in));
+    //Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
+    //setSupportActionBar(myToolbar);
+    //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //getSupportActionBar().setTitle(getString(R.string.action_sign_in));
 
     // Set up the login form.
     //EditText

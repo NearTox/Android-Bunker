@@ -22,47 +22,83 @@
           android:orientation="vertical"
           android:padding="16dp">
           <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_num_poliza_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/agit dd_num_poliza"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="Número de poliza"
+              android:hint="@string/num_poliza"
               android:inputType="number"/>
           </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_client_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/add_client"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:hint="Nombre del cliente"/>
+              android:hint="@string/client_name"
+              android:inputType="textPersonName"/>
           </android.support.design.widget.TextInputLayout>
+          <LinearLayout
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatSpinner
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_margin="8dp"
+              android:entries="@array/empresas"/>
+            <android.support.v7.widget.AppCompatSpinner
+              android:layout_width="0dp"
+              android:layout_height="wrap_content"
+              android:layout_weight="1"
+              android:layout_margin="8dp"
+              android:entries="@array/month"/>
+          </LinearLayout>
           <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_beneficiario_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/add_beneficiario"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:drawableStart="@drawable/ic_event"
-              android:drawablePadding="6dp"
-              android:inputType="date"
-              android:focusable="false"
-              android:hint="Fecha"/>
+              android:hint="@string/beneficiario_name"
+              android:inputType="textPersonName"/>
+          </android.support.design.widget.TextInputLayout>
+
+          <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_monto_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp">
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/add_monto"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:hint="@string/monto"
+              android:inputType="numberDecimal|numberSigned"/>
           </android.support.design.widget.TextInputLayout>
           <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <Spinner
+            <android.support.v7.widget.AppCompatSpinner
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_weight="1"
-              android:layout_margin="8dp"/>
-            <Spinner
+              android:layout_margin="8dp"
+              android:entries="@array/empresas"/>
+            <android.support.v7.widget.AppCompatSpinner
               android:layout_width="0dp"
               android:layout_height="wrap_content"
               android:layout_weight="1"
@@ -70,24 +106,28 @@
               android:entries="@array/duration"/>
           </LinearLayout>
           <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/add_email"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="textWebEmailAddress|textNoSuggestions"
               android:hint="@string/prompt_email"/>
           </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_phone_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
-            <EditText
+            <android.support.v7.widget.AppCompatEditText
+              android:id="@+id/add_phone"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="phone"
-              android:hint="Telefono"/>
+              android:hint="@string/phone"/>
           </android.support.design.widget.TextInputLayout>
         </LinearLayout>
       </ScrollView>

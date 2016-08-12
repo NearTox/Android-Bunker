@@ -23,14 +23,14 @@
       android:gravity="center_vertical"
       android:padding="8dp">
 
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_day"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
         android:layout_marginEnd="6dp"
         android:textSize="20sp"/>
-      <TextView
+      <android.support.v7.widget.AppCompatTextView
         android:id="@+id/item_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,14 +55,14 @@
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
           android:orientation="vertical">
-          <TextView
+          <android.support.v7.widget.AppCompatTextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_marginBottom="2dp"/>
-          <TextView
+          <android.support.v7.widget.AppCompatTextView
             android:id="@+id/item_subname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

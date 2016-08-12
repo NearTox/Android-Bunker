@@ -15,7 +15,6 @@
       android:id="@+id/menu_add_new_descartar"/>
   </group>
   <item
-    android:visible="false"
     android:id="@+id/action_Save"
     android:orderInCategory="200"
     android:title="Guardar"

@@ -54,7 +54,7 @@ public class AddNewActivity extends AppCompatActivity {
     int id = item.getItemId();
 
     if(id == android.R.id.home) {
-      writeNewPost(1234, "567", "89");
+      //writeNewPost(1234, "567", "89");
       finish();
       return true;
     } else if(id == R.id.menu_add_new_descartar) {

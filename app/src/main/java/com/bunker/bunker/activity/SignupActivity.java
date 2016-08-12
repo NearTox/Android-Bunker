@@ -4,6 +4,7 @@ package com.bunker.bunker.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.R;
@@ -90,6 +93,11 @@ public class SignupActivity extends BaseAuth {
     Log.e(TAG, "Must only occur one time");
   }
 
+  private void hideKeyboard() {
+    InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+    inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
+      InputMethodManager.HIDE_NOT_ALWAYS);
+  }
   private void attemptLogin() {
     if(mAuthTask) {
       return;
@@ -130,15 +138,10 @@ public class SignupActivity extends BaseAuth {
       // form field with an error.
       focusView.requestFocus();
     } else {
-      /*View cfocus = this.getCurrentFocus();
-      if(cfocus != null) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-      }*/
+      hideKeyboard();
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-
 
       // TODO: attempt authentication against a network service.
       mAuthTask = true;

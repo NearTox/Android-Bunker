@@ -39,8 +39,7 @@ public class MyCalendar extends Fragment {
     // [END create_database_reference]
 
     mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
-    //mRecycler.setHasFixedSize(true);
-
+    mRecycler.setHasFixedSize(true);
     return rootView;
   }
 
@@ -178,6 +177,6 @@ public class MyCalendar extends Fragment {
     // All my posts
     DatabaseReference myData = databaseReference.child("contacts").child(getUid());
     myData.keepSynced(true);
-    return myData.orderByChild("Day");
+    return myData.orderByChild("Dia");
   }
 }

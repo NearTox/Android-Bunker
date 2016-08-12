@@ -13,7 +13,16 @@
       android:layout_height="match_parent"
       android:orientation="vertical">
       <include layout="@layout/app_bar_layout"/>
+      <ProgressBar
+        android:id="@+id/add_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
       <ScrollView
+        android:id="@+id/add_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -28,10 +37,12 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_num_poliza"
+              android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/num_poliza"
-              android:inputType="number"/>
+              android:inputType="number"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
             android:id="@+id/add_client_layout"
@@ -40,29 +51,32 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_client"
+              android:drawableStart="@drawable/ic_account_box"
+              android:drawablePadding="6dp"
+              android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/client_name"
-              android:inputType="textPersonName"/>
+              android:inputType="textPersonName"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
-          <LinearLayout
-            android:layout_marginTop="8dp"
+          <android.support.design.widget.TextInputLayout
+            android:id="@+id/add_date_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <android.support.v7.widget.AppCompatSpinner
-              android:layout_width="0dp"
+            android:layout_margin="8dp">
+            <android.support.v7.widget.AppCompatTextView
+              android:id="@+id/add_date"
+              android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:layout_margin="8dp"
-              android:entries="@array/empresas"/>
-            <android.support.v7.widget.AppCompatSpinner
-              android:layout_width="0dp"
-              android:layout_height="wrap_content"
-              android:layout_weight="1"
-              android:layout_margin="8dp"
-              android:entries="@array/month"/>
-          </LinearLayout>
+              android:drawableStart="@drawable/ic_event"
+              android:drawablePadding="6dp"
+              android:hint="@string/date"
+              android:maxLines="1"
+              android:focusable="true"
+              android:clickable="true"
+              style="?android:attr/editTextStyle"/>
+          </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
             android:id="@+id/add_beneficiario_layout"
             android:layout_width="match_parent"
@@ -70,10 +84,14 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_beneficiario"
+              android:drawableStart="@drawable/ic_people"
+              android:drawablePadding="6dp"
+              android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/beneficiario_name"
-              android:inputType="textPersonName"/>
+              android:inputType="textPersonName"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
 
           <android.support.design.widget.TextInputLayout
@@ -83,27 +101,59 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_monto"
+              android:drawableStart="@drawable/ic_money"
+              android:drawablePadding="6dp"
+              android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:hint="@string/monto"
-              android:inputType="numberDecimal|numberSigned"/>
+              android:inputType="numberDecimal|numberSigned"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
           <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <android.support.v7.widget.AppCompatSpinner
+            <LinearLayout
               android:layout_width="0dp"
-              android:layout_height="wrap_content"
               android:layout_weight="1"
-              android:layout_margin="8dp"
-              android:entries="@array/empresas"/>
-            <android.support.v7.widget.AppCompatSpinner
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+              <android.support.v7.widget.AppCompatTextView
+                android:layout_marginStart="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/aseguradora"/>
+              <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/add_aseguradora"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:entries="@array/empresas"/>
+            </LinearLayout>
+            <LinearLayout
               android:layout_width="0dp"
-              android:layout_height="wrap_content"
               android:layout_weight="1"
-              android:layout_margin="8dp"
-              android:entries="@array/duration"/>
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
+              <android.support.v7.widget.AppCompatTextView
+                android:layout_marginStart="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/duracion"/>
+              <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/add_plan"
+                android:focusable="true"
+                android:clickable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:entries="@array/duration"/>
+            </LinearLayout>
           </LinearLayout>
           <android.support.design.widget.TextInputLayout
             android:id="@+id/add_email_layout"
@@ -112,10 +162,14 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_email"
+              android:drawableStart="@drawable/ic_mail"
+              android:drawablePadding="6dp"
+              android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="textWebEmailAddress|textNoSuggestions"
-              android:hint="@string/prompt_email"/>
+              android:hint="@string/prompt_email"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
           <android.support.design.widget.TextInputLayout
             android:id="@+id/add_phone_layout"
@@ -124,10 +178,14 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_phone"
+              android:drawableStart="@drawable/ic_phone"
+              android:drawablePadding="6dp"
+              android:imeOptions="flagNoExtractUi|actionDone"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:inputType="phone"
-              android:hint="@string/phone"/>
+              android:hint="@string/phone"
+              android:maxLines="1"/>
           </android.support.design.widget.TextInputLayout>
         </LinearLayout>
       </ScrollView>

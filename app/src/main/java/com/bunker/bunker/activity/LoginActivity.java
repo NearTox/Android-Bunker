@@ -3,6 +3,7 @@ package com.bunker.bunker.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,8 @@ import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.R;
@@ -93,6 +96,13 @@ auth.sendPasswordResetEmail(emailAddress)
     Log.e(TAG, "Must only occur one time");
   }
 
+  private void hideKeyboard() {
+    if (getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
+      InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+      inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
+        InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+  }
   private void attemptLogin() {
     if(mAuthTask) {
       return;
@@ -133,14 +143,11 @@ auth.sendPasswordResetEmail(emailAddress)
       // form field with an error.
       focusView.requestFocus();
     } else {
+      hideKeyboard();
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true);
-      /*View cfocus = this.getCurrentFocus();
-      if(cfocus != null) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(cfocus.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-      }*/
+
       mAuthTask = true;
       email = email_info.GetEmail();
       mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -182,7 +189,6 @@ auth.sendPasswordResetEmail(emailAddress)
 
               mPasswordView.setError(getString(R.string.error_incorrect_password));
               mPasswordView.requestFocus();
-
             }
           }
 

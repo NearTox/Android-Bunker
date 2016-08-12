@@ -16,6 +16,8 @@ public class CalendarModel {
   public int Dia;
   // 1-12
   public int Mes;
+  //1900->
+  public int Year;
   //
   public String Telefono;
   public String Email;
@@ -37,6 +39,7 @@ public class CalendarModel {
     result.put("Monto", Monto);
     result.put("Dia", Dia);
     result.put("Mes", Mes);
+    result.put("Year", Year);
     result.put("Telefono", Telefono);
     result.put("Email", Email);
     result.put("HasStar", HasStar);

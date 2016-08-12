@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -91,7 +92,11 @@ public class DashBoardActivity extends AppCompatActivity
         boolean connected = snapshot.getValue(Boolean.class);
         if(connected) {
           Log.d(TAG, "connected");
+          //Snackbar snackbar = Snackbar.make(drawerLayout, "Sincronizando...", Snackbar.LENGTH_LONG);
+          //snackbar.show();
         } else {
+          //Snackbar snackbar = Snackbar.make(drawerLayout, "Usando Datos Locales", Snackbar.LENGTH_LONG);
+          //snackbar.show();
           Log.d(TAG, "not connected");
         }
       }

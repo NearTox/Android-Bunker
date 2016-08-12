@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,14 +22,58 @@ import com.bunker.bunker.R;
 import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyContacts extends Fragment {
+  private static final String TAG ="MyContacts";
+  private SparseBooleanArray SelectedItems;
   private DatabaseReference mDatabase;
 
   private FirebaseRecyclerAdapter<CalendarModel, ContactsHolder> mAdapter;
   private RecyclerView mRecycler;
   private LinearLayoutManager mManager;
 
+  /*public void toggleSelection(int pos){
+    if(SelectedItems.get(pos,false)){
+      SelectedItems.delete(pos);
+    }else{
+      SelectedItems.put(pos,true);
+    }
+    mAdapter.notifyDataSetChanged();
+  }
 
+  public void clearSelections(){
+    SelectedItems.clear();
+    mAdapter.notifyDataSetChanged();
+  }
+  public List<Integer> getSelectedItemCount() {
+    List<Integer> items = new ArrayList<Integer>(SelectedItems.size());
+    for(int i = 0; i < SelectedItems.size(); i++) {
+      items.add(SelectedItems.keyAt(i));
+    }
+    return items;
+  }
+  public void onLongPress(MotionEvent e) {
+   View view =
+      recyclerView.findChildViewUnder(e.getX(), e.getY());
+   if (actionMode != null) {
+      return;
+   }
+   actionMode =
+      startActionMode(RecyclerViewDemoActivity.this);
+   int idx = recyclerView.getChildPosition(view);
+   myToggleSelection(idx);
+   super.onLongPress(e);
+}
+
+private void myToggleSelection(int idx) {
+   adapter.toggleSelection(idx);
+   String title = getString(
+         R.string.selected_count,
+         adapter.getSelectedItemCount());
+   actionMode.setTitle(title);
+}*/
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
                            Bundle savedInstanceState) {
@@ -74,7 +120,16 @@ public class MyContacts extends Fragment {
           }
         });
 
-        // Determine if the current user has liked this post and set UI accordingly
+        // Determine if the 
+        viewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+          @Override
+          public boolean onLongClick(View view) {
+            //toggleSelection(mRecycler.getChildAdapterPosition(view));
+            Log.i(TAG, "onLongClick: "+mRecycler.getChildAdapterPosition(view));
+            return false;
+          }
+
+        });
         /*if (model.stars.containsKey(getUid())) {
           viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_24);
         } else {

@@ -17,7 +17,7 @@
     android:layout_width="80dp"
     android:layout_height="80dp"
     android:layout_marginTop="@dimen/activity_vertical_margin"
-    fresco:placeholderImage="@drawable/placeholder" />
+    fresco:placeholderImage="@drawable/ic_action_name" />
   <android.support.v7.widget.AppCompatTextView
     android:id="@+id/nav_name_view"
     android:layout_width="match_parent"

@@ -44,10 +44,10 @@ public class SignupActivity extends BaseAuth {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_signup);
 
-    Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
-    setSupportActionBar(myToolbar);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setTitle(getString(R.string.action_sign_up));
+    //Toolbar myToolbar = (Toolbar)findViewById(R.id.toolbar);
+    //setSupportActionBar(myToolbar);
+    //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    //getSupportActionBar().setTitle(getString(R.string.action_sign_up));
 
     // Set up the login form.
     //EditText

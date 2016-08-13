@@ -27,6 +27,7 @@
           android:minHeight="115dp"
           android:gravity="center">
           <android.support.v7.widget.AppCompatImageView
+            android:transitionName="@string/logo_animation"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:contentDescription="@string/app_name"

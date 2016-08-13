@@ -205,7 +205,6 @@ implements TextWatcher, ValueEventListener {
         }
       }
     });
-    updateLabel();
 
     mBeneficiarioLayout = (TextInputLayout)findViewById(R.id.add_beneficiario_layout);
     mBeneficiario = (AppCompatEditText)findViewById(R.id.add_beneficiario);
@@ -238,8 +237,11 @@ implements TextWatcher, ValueEventListener {
     if(!mPostKey.isEmpty()) {
       showProgress(true);
       mPostRef = mDatabase.child("contacts").child(getUid()).child(mPostKey);
-// Attach an listener to read the data at our posts reference
+    // Attach an listener to read the data at our posts reference
       mPostRef.addValueEventListener(this);
+    } else {
+      updateLabel();
+      mHasMod = false;
     }
   }
 
@@ -284,7 +286,7 @@ implements TextWatcher, ValueEventListener {
         showProgress(false);
         MyToast.ShowToast("La información ya existe", AddNewActivity.this);
       }
-      if(!mPostKey.isEmpty() && !mTask) {
+      if(!mPostKey.isEmpty() && !mTask && !mHasMod) {
         showProgress(false);
         CalendarModel data = snapshot.getValue(CalendarModel.class);
         mPoliza.setText(String.valueOf(data.NoPoliza));
@@ -293,6 +295,10 @@ implements TextWatcher, ValueEventListener {
         mMonto.setText(String.valueOf(data.Monto));
         mEmail.setText(data.Email);
         mPhone.setText(data.Telefono);
+        myCalendar.set(Calendar.DAY_OF_MONTH,data.Dia);
+        myCalendar.set(Calendar.MONTH,data.Mes);
+        myCalendar.set(Calendar.YEAR,data.Year);
+        updateLabel();
         mHasMod = false;
       }
     }

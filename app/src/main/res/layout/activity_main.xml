@@ -26,12 +26,6 @@
         android:layout_height="200dp"
         android:contentDescription="@string/app_name"
         android:background="@drawable/bunker_logo_2"/>
-      <android.support.v7.widget.AppCompatTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textStyle="bold"
-        android:textSize="0sp"/>
     </LinearLayout>
     <ScrollView
       android:layout_width="match_parent"

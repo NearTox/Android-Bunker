@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
@@ -26,6 +27,7 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
@@ -35,6 +37,7 @@ import com.bunker.bunker.MyToast;
 import com.bunker.bunker.R;
 import com.bunker.bunker.model.CalendarModel;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,7 +47,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -84,8 +86,7 @@ implements TextWatcher, ValueEventListener {
   private void hideKeyboard() {
     if(getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
       InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-      inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(),
-        InputMethodManager.HIDE_NOT_ALWAYS);
+      inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
   }
 
@@ -103,7 +104,6 @@ implements TextWatcher, ValueEventListener {
 
     @Override
     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-      // TODO Auto-generated method stub
       myCalendar.set(Calendar.YEAR, year);
       myCalendar.set(Calendar.MONTH, monthOfYear);
       myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -136,7 +136,10 @@ implements TextWatcher, ValueEventListener {
     }
 
     setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    ActionBar acBar = getSupportActionBar();
+    if(acBar!=null) {
+      acBar.setDisplayHomeAsUpEnabled(true);
+    }
     if(mPostKey.isEmpty()) {
       getSupportActionBar().setTitle("Nueva Poliza");
     } else {
@@ -150,9 +153,29 @@ implements TextWatcher, ValueEventListener {
     //
 
     mAseguradoraSpinner = (AppCompatSpinner)findViewById(R.id.add_aseguradora);
-    //mAseguradoraSpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+    mAseguradoraSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        mHasMod = true;
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> adapterView) {
+
+      }
+    });
     mPlanSpinner = (AppCompatSpinner)findViewById(R.id.add_plan);
-    //mPlanSpinner.setOnItemSelectedListener(new CustomOnItemSelectedListener());
+    mPlanSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+      @Override
+      public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        mHasMod = true;
+      }
+
+      @Override
+      public void onNothingSelected(AdapterView<?> adapterView) {
+
+      }
+    });
 
     //
 
@@ -190,9 +213,7 @@ implements TextWatcher, ValueEventListener {
       @Override
       public void onClick(View view) {
         hideKeyboard();
-        new DatePickerDialog(AddNewActivity.this, MyDatePick, myCalendar
-          .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-          myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+        new DatePickerDialog(AddNewActivity.this, MyDatePick, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show();
       }
     });
 
@@ -236,13 +257,21 @@ implements TextWatcher, ValueEventListener {
     if(!mPostKey.isEmpty()) {
       showProgress(true);
       mPostRef = mDatabase.child("contacts").child(getUid()).child(mPostKey);
-    // Attach an listener to read the data at our posts reference
+      // Attach an listener to read the data at our posts reference
       mPostRef.addValueEventListener(this);
     } else {
       updateLabel();
       mHasMod = false;
       showProgress(false);
     }
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    /*if(mAdapter != null) {
+      mAdapter.cleanup();
+    }*/
   }
 
   @Override
@@ -272,7 +301,7 @@ implements TextWatcher, ValueEventListener {
   private void writeNewPost() {
     if(newCalendar != null) {
       mPostRef = mDatabase.child("contacts").child(getUid()).child(String.valueOf(newCalendar.NoPoliza));
-// Attach an listener to read the data at our posts reference
+      // Attach an listener to read the data at our posts reference
       mPostRef.addValueEventListener(this);
     }
   }
@@ -299,9 +328,9 @@ implements TextWatcher, ValueEventListener {
         mMonto.setText(String.valueOf(data.Monto));
         mEmail.setText(data.Email);
         mPhone.setText(data.Telefono);
-        myCalendar.set(Calendar.DAY_OF_MONTH,data.Dia);
-        myCalendar.set(Calendar.MONTH,data.Mes);
-        myCalendar.set(Calendar.YEAR,data.Year);
+        myCalendar.set(Calendar.DAY_OF_MONTH, data.Dia);
+        myCalendar.set(Calendar.MONTH, data.Mes);
+        myCalendar.set(Calendar.YEAR, data.Year);
         updateLabel();
         mHasMod = false;
       }
@@ -446,7 +475,12 @@ implements TextWatcher, ValueEventListener {
   }
 
   public String getUid() {
-    return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    FirebaseUser aa = FirebaseAuth.getInstance().getCurrentUser();
+    if(aa != null){
+      return aa.getUid();
+    }    else{
+      return "";
+    }
   }
 
 
@@ -473,32 +507,31 @@ implements TextWatcher, ValueEventListener {
     // for very easy animations. If available, use these APIs to fade-in
     // the progress spinner.
     if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-      int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+      int shortAnimTime = getResources().getInteger(android.R.integer.config_mediumAnimTime);
 
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-      mLoginFormView.animate()
-        .setDuration(shortAnimTime)
+      mLoginFormView.setAlpha(show ? 1 : 0);
+      mLoginFormView.animate().
+        setDuration(shortAnimTime)
         .alpha(show ? 0 : 1)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-          }
-        });
-
+        @Override
+        public void onAnimationEnd(Animator animation) {
+          mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+      });
       mProgressView.setAlpha(show ? 0 : 1);
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-      mProgressView.animate()
-        .setDuration(shortAnimTime)
+      mProgressView.animate().setDuration(shortAnimTime)
         .alpha(show ? 1 : 0)
         .setInterpolator(new DecelerateInterpolator())
         .setListener(new AnimatorListenerAdapter() {
-          @Override
-          public void onAnimationEnd(Animator animation) {
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-          }
-        });
+        @Override
+        public void onAnimationEnd(Animator animation) {
+          mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+      });
     } else {
       // The ViewPropertyAnimator APIs are not available, so simply show
       // and hide the relevant UI components.

@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -24,7 +23,6 @@ import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.fragment.MyCalendar;
 import com.bunker.bunker.fragment.MyContacts;
-import com.bunker.bunker.model.Empresa;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
@@ -46,9 +44,7 @@ public class DashBoardActivity extends AppCompatActivity
   private FragmentPagerAdapter mPagerAdapter;
   private ViewPager mViewPager;
   FirebaseDatabase mDatabase;
-  DatabaseReference mEmpresas;
-
-
+  DatabaseReference connectedRef;
   private FirebaseUser user;
 
   public static final String md5(final String s) {
@@ -75,6 +71,35 @@ public class DashBoardActivity extends AppCompatActivity
     return "";
   }
 
+  private ValueEventListener MyConection = new ValueEventListener() {
+    @Override
+    public void onDataChange(DataSnapshot snapshot) {
+      boolean connected = snapshot.getValue(Boolean.class);
+      if(connected) {
+        Log.d(TAG, "connected");
+        //Snackbar snackbar = Snackbar.make(drawerLayout, "Sincronizando...", Snackbar.LENGTH_LONG);
+        //snackbar.show();
+      } else {
+        //Snackbar snackbar = Snackbar.make(drawerLayout, "Usando Datos Locales", Snackbar.LENGTH_LONG);
+        //snackbar.show();
+        Log.d(TAG, "not connected");
+      }
+    }
+
+    @Override
+    public void onCancelled(DatabaseError error) {
+      Log.d(TAG, "Listener was cancelled");
+    }
+  };
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    if(connectedRef != null) {
+      connectedRef.removeEventListener(MyConection);
+    }
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -84,102 +109,8 @@ public class DashBoardActivity extends AppCompatActivity
     user = FirebaseAuth.getInstance().getCurrentUser();
 
     mDatabase = MyDatabase.getInstance();
-    mEmpresas = mDatabase.getReference("empresas");
-    DatabaseReference connectedRef = mDatabase.getReference(".info/connected");
-    connectedRef.addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(DataSnapshot snapshot) {
-        boolean connected = snapshot.getValue(Boolean.class);
-        if(connected) {
-          Log.d(TAG, "connected");
-          //Snackbar snackbar = Snackbar.make(drawerLayout, "Sincronizando...", Snackbar.LENGTH_LONG);
-          //snackbar.show();
-        } else {
-          //Snackbar snackbar = Snackbar.make(drawerLayout, "Usando Datos Locales", Snackbar.LENGTH_LONG);
-          //snackbar.show();
-          Log.d(TAG, "not connected");
-        }
-      }
-
-      @Override
-      public void onCancelled(DatabaseError error) {
-        Log.d(TAG, "Listener was cancelled");
-      }
-    });
-
-    mEmpresas.addValueEventListener(new ValueEventListener() {
-      @Override
-      public void onDataChange(DataSnapshot dataSnapshot) {
-        Log.d(TAG, "There are " + dataSnapshot.getChildrenCount() + " blog posts");
-        for(DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-          String name = (String)postSnapshot.child("Nombre").getValue();
-          Log.d(TAG, name);
-          Empresa company = postSnapshot.getValue(Empresa.class);
-          Log.d(TAG, company.toString());
-        }
-      }
-
-      @Override
-      public void onCancelled(DatabaseError error) {
-        // Failed to read value
-        Log.w(TAG, "Failed to read value.", error.toException());
-      }
-    });
-    /*ChildEventListener childEventListener = new ChildEventListener() {
-      @Override
-      public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-        Log.d(TAG, "onChildAdded:" + dataSnapshot.getKey());
-
-        // A new comment has been added, add it to the displayed list
-        Comment comment = dataSnapshot.getValue(Comment.class);
-
-        // ...
-      }
-
-      @Override
-      public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-        Log.d(TAG, "onChildChanged:" + dataSnapshot.getKey());
-
-        // A comment has changed, use the key to determine if we are displaying this
-        // comment and if so displayed the changed comment.
-        Comment newComment = dataSnapshot.getValue(Comment.class);
-        String commentKey = dataSnapshot.getKey();
-
-        // ...
-      }
-
-      @Override
-      public void onChildRemoved(DataSnapshot dataSnapshot) {
-        Log.d(TAG, "onChildRemoved:" + dataSnapshot.getKey());
-
-        // A comment has changed, use the key to determine if we are displaying this
-        // comment and if so remove it.
-        String commentKey = dataSnapshot.getKey();
-
-        // ...
-      }
-
-      @Override
-      public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-        Log.d(TAG, "onChildMoved:" + dataSnapshot.getKey());
-
-        // A comment has changed position, use the key to determine if we are
-        // displaying this comment and if so move it.
-        Comment movedComment = dataSnapshot.getValue(Comment.class);
-        String commentKey = dataSnapshot.getKey();
-
-        // ...
-      }
-
-      @Override
-      public void onCancelled(DatabaseError databaseError) {
-        Log.w(TAG, "postComments:onCancelled", databaseError.toException());
-        Toast.makeText(DashBoardActivity.this, "Failed to load comments.",
-            Toast.LENGTH_SHORT).show();
-      }
-    };
-    mDatabase.addChildEventListener(childEventListener);*/
-
+    connectedRef = mDatabase.getReference(".info/connected");
+    connectedRef.addValueEventListener(MyConection);
 
     drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
 

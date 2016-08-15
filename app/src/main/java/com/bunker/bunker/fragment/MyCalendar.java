@@ -1,12 +1,7 @@
 package com.bunker.bunker.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -15,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 
 import com.bunker.bunker.MyDatabase;
@@ -24,13 +18,14 @@ import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
 import java.util.Calendar;
 
 public class MyCalendar extends Fragment {
-  String[] mMesesStr;
+  private String[] mMesesStr;
   private DatabaseReference mDatabase;
 
   private FirebaseRecyclerAdapter<CalendarModel, CalendarHolder> mAdapter;
@@ -93,54 +88,12 @@ public class MyCalendar extends Fragment {
         bindToPost(viewHolder, model, new View.OnClickListener() {
           @Override
           public void onClick(View starView) {
-            // Need to write to both places the post is stored
-            //DatabaseReference globalPostRef = mDatabase.child("posts").child(postRef.getKey());
-            //DatabaseReference userPostRef = mDatabase.child("user-posts").child(model.uid).child(postRef.getKey());
-
-            // Run two transactions
-            //onStarClicked(globalPostRef);
-            //onStarClicked(userPostRef);
           }
         });
       }
     };
     mRecycler.setAdapter(mAdapter);
   }
-
-  // [START post_stars_transaction]
-  private void onStarClicked(DatabaseReference postRef) {
-    /*postRef.runTransaction(new Transaction.Handler() {
-      @Override
-      public Transaction.Result doTransaction(MutableData mutableData) {
-        CalendarModel p = mutableData.getValue(CalendarModel.class);
-        if (p == null) {
-          return Transaction.success(mutableData);
-        }
-
-        if (p.stars.containsKey(getUid())) {
-          // Unstar the post and remove self from stars
-          p.starCount = p.starCount - 1;
-          p.stars.remove(getUid());
-        } else {
-          // Star the post and add self to stars
-          p.starCount = p.starCount + 1;
-          p.stars.put(getUid(), true);
-        }
-
-        // Set value and report transaction success
-        mutableData.setValue(p);
-        return Transaction.success(mutableData);
-      }
-
-      @Override
-      public void onComplete(DatabaseError databaseError, boolean b,
-                             DataSnapshot dataSnapshot) {
-        // Transaction completed
-        Log.d(TAG, "postTransaction:onComplete:" + databaseError);
-      }
-    });*/
-  }
-  // [END post_stars_transaction]
 
   @Override
   public void onDestroy() {
@@ -151,21 +104,26 @@ public class MyCalendar extends Fragment {
   }
 
   public String getUid() {
-    return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    FirebaseUser aa = FirebaseAuth.getInstance().getCurrentUser();
+    if(aa != null){
+      return aa.getUid();
+    }    else{
+      return "";
+    }
   }
 
   boolean comparePlan(CalendarModel post) {
-    if(post.Plan > 0) {
+    if((post.Plan > 0 && post.Plan < 5) || post.Plan == 6 || post.Plan == 12) {
       int mod = (post.Mes + 1) % post.Plan;
-      return mod == ((myCalendar.get(Calendar.MONTH) + 1) % post.Plan);
+      return mod != ((myCalendar.get(Calendar.MONTH) + 1) % post.Plan);
     } else {
-      return post.Mes == myCalendar.get(Calendar.MONTH);
+      return !(post.Mes == myCalendar.get(Calendar.MONTH) && post.Year == myCalendar.get(Calendar.YEAR));
     }
   }
 
   public void bindToPost(CalendarHolder pThis, CalendarModel post, View.OnClickListener starClickListener) {
     pThis.dayView.setText(String.valueOf(post.Dia));
-    boolean isVisible = comparePlan(post);
+    boolean isVisible = !comparePlan(post);
     if(isVisible) {
       pThis.monthView.setText(mMesesStr[myCalendar.get(Calendar.MONTH)]);
     } else if(post.Mes < mMesesStr.length) {
@@ -176,36 +134,17 @@ public class MyCalendar extends Fragment {
     pThis.nameView.setText(post.Nombre);
     pThis.subnameView.setText(String.valueOf(post.NoPoliza));
     pThis.iconView.setOnClickListener(starClickListener);
-    hidePost(pThis, comparePlan(post));
-  }
-
-  static int myMargin = 0;
-  private void hidePost(CalendarHolder pThis, boolean show) {
-    RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)pThis.view.getLayoutParams();
-    if(show) {
-      param.height = LinearLayout.LayoutParams.WRAP_CONTENT;
-      pThis.view.setVisibility(View.VISIBLE);
-      if(param.bottomMargin !=0 && myMargin==0){
-        myMargin = param.bottomMargin;
-      }
-      param.bottomMargin = myMargin;
-      param.topMargin = myMargin;
-    } else {
-      pThis.view.setVisibility(View.GONE);
-      param.height = 0;
-      param.bottomMargin = 0;
-      param.topMargin = 0;
-    }
-    pThis.view.setLayoutParams(param);
+    pThis.hidePost(comparePlan(post));
   }
 
   public static class CalendarHolder extends RecyclerView.ViewHolder {
-    public View view;
-    public AppCompatTextView dayView;
-    public AppCompatTextView monthView;
-    public AppCompatTextView nameView;
-    public AppCompatTextView subnameView;
-    public AppCompatImageView iconView;
+    private static int myMargin = 0;
+    View view;
+    AppCompatTextView dayView;
+    AppCompatTextView monthView;
+    AppCompatTextView nameView;
+    AppCompatTextView subnameView;
+    AppCompatImageView iconView;
 
     public CalendarHolder(View itemView) {
       super(itemView);
@@ -215,9 +154,27 @@ public class MyCalendar extends Fragment {
       nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);
       subnameView = (AppCompatTextView)itemView.findViewById(R.id.item_subname);
       iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
+      hidePost(true);
+    }
+
+    void hidePost(boolean hide) {
+      RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)view.getLayoutParams();
+      if(param.bottomMargin != 0 && myMargin == 0) {
+        myMargin = param.bottomMargin;
+      }if(hide) {
+        param.height = 0;
+        param.bottomMargin = 0;
+        param.topMargin = 0;
+        view.setAlpha(0);
+      } else {
+        param.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        param.bottomMargin = myMargin;
+        param.topMargin = myMargin;
+        view.setAlpha(1);
+      }
+      view.setLayoutParams(param);
     }
   }
-
   public MyCalendar() {
   }
 

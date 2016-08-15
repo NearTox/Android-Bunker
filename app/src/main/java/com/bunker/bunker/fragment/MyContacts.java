@@ -19,6 +19,7 @@ import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
@@ -193,9 +194,13 @@ private void myToggleSelection(int idx) {
   }
 
   public String getUid() {
-    return FirebaseAuth.getInstance().getCurrentUser().getUid();
+    FirebaseUser aa = FirebaseAuth.getInstance().getCurrentUser();
+    if(aa != null){
+      return aa.getUid();
+    }    else{
+      return "";
+    }
   }
-
   public static class ContactsHolder extends RecyclerView.ViewHolder {
 
     public AppCompatTextView nameView;

@@ -58,6 +58,7 @@
   </string-array>
 
   <string-array name="duration">
+    <item>Unica</item>
     <item>Mensual</item>
     <item>Bimestral</item>
     <item>Trimestral</item>

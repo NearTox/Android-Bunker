@@ -1,7 +1,12 @@
 package com.bunker.bunker.fragment;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -10,6 +15,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
 
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
@@ -20,14 +27,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 
-public class MyCalendar extends Fragment {
+import java.util.Calendar;
 
+public class MyCalendar extends Fragment {
+  String[] mMesesStr;
   private DatabaseReference mDatabase;
 
   private FirebaseRecyclerAdapter<CalendarModel, CalendarHolder> mAdapter;
   private RecyclerView mRecycler;
   private LinearLayoutManager mManager;
-
+  Calendar myCalendar = Calendar.getInstance();
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,7 +48,8 @@ public class MyCalendar extends Fragment {
     // [END create_database_reference]
 
     mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
-    mRecycler.setHasFixedSize(true);
+    //mRecycler.setHasFixedSize(true);
+    mMesesStr = getResources().getStringArray(R.array.month);
     return rootView;
   }
 
@@ -80,7 +90,7 @@ public class MyCalendar extends Fragment {
         }*/
 
         // Bind Post to ViewHolder, setting OnClickListener for the star button
-        viewHolder.bindToPost(model, new View.OnClickListener() {
+        bindToPost(viewHolder, model, new View.OnClickListener() {
           @Override
           public void onClick(View starView) {
             // Need to write to both places the post is stored
@@ -144,24 +154,62 @@ public class MyCalendar extends Fragment {
     return FirebaseAuth.getInstance().getCurrentUser().getUid();
   }
 
-  public static class CalendarHolder extends RecyclerView.ViewHolder {
+  boolean comparePlan(CalendarModel post) {
+    if(post.Plan > 0) {
+      int mod = (post.Mes + 1) % post.Plan;
+      return mod == ((myCalendar.get(Calendar.MONTH) + 1) % post.Plan);
+    } else {
+      return post.Mes == myCalendar.get(Calendar.MONTH);
+    }
+  }
 
+  public void bindToPost(CalendarHolder pThis, CalendarModel post, View.OnClickListener starClickListener) {
+    pThis.dayView.setText(String.valueOf(post.Dia));
+    boolean isVisible = comparePlan(post);
+    if(isVisible) {
+      pThis.monthView.setText(mMesesStr[myCalendar.get(Calendar.MONTH)]);
+    } else if(post.Mes < mMesesStr.length) {
+      pThis.monthView.setText(mMesesStr[post.Mes]);
+    } else {
+      pThis.monthView.setText(String.valueOf(post.Mes));
+    }
+    pThis.nameView.setText(post.Nombre);
+    pThis.subnameView.setText(String.valueOf(post.NoPoliza));
+    pThis.iconView.setOnClickListener(starClickListener);
+    hidePost(pThis, comparePlan(post));
+  }
+
+  static int myMargin = 0;
+  private void hidePost(CalendarHolder pThis, boolean show) {
+    RecyclerView.LayoutParams param = (RecyclerView.LayoutParams)pThis.view.getLayoutParams();
+    if(show) {
+      param.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+      pThis.view.setVisibility(View.VISIBLE);
+      if(param.bottomMargin !=0 && myMargin==0){
+        myMargin = param.bottomMargin;
+      }
+      param.bottomMargin = myMargin;
+      param.topMargin = myMargin;
+    } else {
+      pThis.view.setVisibility(View.GONE);
+      param.height = 0;
+      param.bottomMargin = 0;
+      param.topMargin = 0;
+    }
+    pThis.view.setLayoutParams(param);
+  }
+
+  public static class CalendarHolder extends RecyclerView.ViewHolder {
+    public View view;
     public AppCompatTextView dayView;
     public AppCompatTextView monthView;
     public AppCompatTextView nameView;
     public AppCompatTextView subnameView;
     public AppCompatImageView iconView;
 
-    public void bindToPost(CalendarModel post, View.OnClickListener starClickListener) {
-      dayView.setText(String.valueOf(post.Dia));
-      monthView.setText(String.valueOf(post.Mes));
-      nameView.setText(post.Nombre);
-      subnameView.setText(String.valueOf(post.NoPoliza));
-      iconView.setOnClickListener(starClickListener);
-    }
-
     public CalendarHolder(View itemView) {
       super(itemView);
+      view = itemView;
       dayView = (AppCompatTextView)itemView.findViewById(R.id.item_day);
       monthView = (AppCompatTextView)itemView.findViewById(R.id.item_month);
       nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);

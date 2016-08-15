@@ -26,7 +26,7 @@
 
   <!-- Strings related to Add new contact -->
 
-  <string name="error_invalid_name">Este Nombre es invalido</string>
+  <string name="error_invalid_name">El nombre debe de llevar un apellido y un nombre</string>
   <string name="beneficiario_name">Nombre del beneficiario</string>
   <string name="num_poliza">Número de póliza</string>
   <string name="client_name">Nombre del cliente</string>
@@ -67,5 +67,8 @@
   </string-array>
   <string name="title_item_list">Items</string>
   <string name="title_item_detail">Item Detail</string>
+  <string name="descartar">Descartar</string>
+  <string name="save">Guardar</string>
+  <string name="delete">Borrar</string>
 
 </resources>

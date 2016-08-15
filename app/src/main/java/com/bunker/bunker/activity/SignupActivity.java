@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 
 import com.bunker.bunker.EmailFormater;
@@ -205,20 +206,29 @@ public class SignupActivity extends BaseAuth {
       int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-      mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-      });
+      mLoginFormView.animate()
+        .setDuration(shortAnimTime)
+        .alpha(show ? 0 : 1)
+        .setInterpolator(new DecelerateInterpolator())
+        .setListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+          }
+        });
 
+      mProgressView.setAlpha(show ? 0 : 1);
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-      mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-      });
+      mProgressView.animate()
+        .setDuration(shortAnimTime)
+        .alpha(show ? 1 : 0)
+        .setInterpolator(new DecelerateInterpolator())
+        .setListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+          }
+        });
     } else {
       // The ViewPropertyAnimator APIs are not available, so simply show
       // and hide the relevant UI components.
@@ -226,6 +236,7 @@ public class SignupActivity extends BaseAuth {
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
   }
+
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {

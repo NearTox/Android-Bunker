@@ -23,6 +23,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
@@ -248,6 +249,10 @@ implements TextWatcher, ValueEventListener {
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.menu_add_new, menu);
+
+    if(!mPostKey.isEmpty()) {
+      menu.findItem(R.id.action_remove).setVisible(true);
+    }
     return true;
   }
 
@@ -461,6 +466,7 @@ implements TextWatcher, ValueEventListener {
   /**
    * Shows the progress UI and hides the login form.
    */
+
   @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
   private void showProgress(final boolean show) {
     // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
@@ -470,16 +476,24 @@ implements TextWatcher, ValueEventListener {
       int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-      mLoginFormView.animate().setDuration(shortAnimTime).alpha(show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-      });
+      mLoginFormView.animate()
+        .setDuration(shortAnimTime)
+        .alpha(show ? 0 : 1)
+        .setInterpolator(new DecelerateInterpolator())
+        .setListener(new AnimatorListenerAdapter() {
+          @Override
+          public void onAnimationEnd(Animator animation) {
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+          }
+        });
 
+      mProgressView.setAlpha(show ? 0 : 1);
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-      mProgressView.animate().setDuration(shortAnimTime).alpha(show ? 1 : 0).
-        setListener(new AnimatorListenerAdapter() {
+      mProgressView.animate()
+        .setDuration(shortAnimTime)
+        .alpha(show ? 1 : 0)
+        .setInterpolator(new DecelerateInterpolator())
+        .setListener(new AnimatorListenerAdapter() {
           @Override
           public void onAnimationEnd(Animator animation) {
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);

@@ -198,7 +198,7 @@ public class DashBoardActivity extends AppCompatActivity
       }
     });
 
-    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu);
+    getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_wrapped);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
     NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);

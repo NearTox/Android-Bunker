@@ -17,14 +17,13 @@
         android:id="@+id/add_progress"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_gravity="center"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"
+        android:layout_gravity="center"/>
       <ScrollView
         android:id="@+id/add_form"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="wrap_content"
@@ -51,7 +50,7 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_client"
-              android:drawableStart="@drawable/ic_account_box"
+              android:drawableStart="@drawable/ic_account_box_wrapped"
               android:drawablePadding="6dp"
               android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
@@ -69,7 +68,7 @@
               android:id="@+id/add_date"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:drawableStart="@drawable/ic_event"
+              android:drawableStart="@drawable/ic_event_wrapped"
               android:drawablePadding="6dp"
               android:hint="@string/date"
               android:maxLines="1"
@@ -84,7 +83,7 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_beneficiario"
-              android:drawableStart="@drawable/ic_people"
+              android:drawableStart="@drawable/ic_people_wrapped"
               android:drawablePadding="6dp"
               android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
@@ -101,7 +100,7 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_monto"
-              android:drawableStart="@drawable/ic_money"
+              android:drawableStart="@drawable/ic_money_wrapped"
               android:drawablePadding="6dp"
               android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
@@ -162,7 +161,7 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_email"
-              android:drawableStart="@drawable/ic_mail"
+              android:drawableStart="@drawable/ic_mail_wrapped"
               android:drawablePadding="6dp"
               android:imeOptions="flagNoExtractUi|actionNext"
               android:layout_width="match_parent"
@@ -178,7 +177,7 @@
             android:layout_margin="8dp">
             <android.support.v7.widget.AppCompatEditText
               android:id="@+id/add_phone"
-              android:drawableStart="@drawable/ic_phone"
+              android:drawableStart="@drawable/ic_phone_wrapped"
               android:drawablePadding="6dp"
               android:imeOptions="flagNoExtractUi|actionDone"
               android:layout_width="match_parent"

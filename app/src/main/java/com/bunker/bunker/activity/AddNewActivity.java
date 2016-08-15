@@ -32,7 +32,6 @@ import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.MyToast;
 import com.bunker.bunker.R;
-import com.bunker.bunker.fragment.MyCalendar;
 import com.bunker.bunker.model.CalendarModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -58,7 +57,6 @@ implements TextWatcher, ValueEventListener {
   private DatabaseReference mDatabase;
   private boolean mHasMod = false;
   private boolean mTask = false;
-  private List<String> mDiasArray;
 
   private View mProgressView;
   private View mLoginFormView;
@@ -242,6 +240,7 @@ implements TextWatcher, ValueEventListener {
     } else {
       updateLabel();
       mHasMod = false;
+      showProgress(false);
     }
   }
 

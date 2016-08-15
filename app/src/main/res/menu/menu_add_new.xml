@@ -6,7 +6,7 @@
   tools:context=".activity.AddNewActivity">
   <group
     android:id="@+id/action_settings"
-    android:icon="@drawable/ic_more_vert"
+    android:icon="@drawable/ic_more_vert_wrapped"
     android:orderInCategory="100"
     android:title="Actions"
     app:showAsAction="never" >
@@ -18,6 +18,6 @@
     android:id="@+id/action_Save"
     android:orderInCategory="200"
     android:title="Guardar"
-    android:icon="@drawable/ic_check"
+    android:icon="@drawable/ic_check_wrapped"
     app:showAsAction="ifRoom"/>
 </menu>

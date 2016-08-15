@@ -21,13 +21,14 @@
         android:orientation="vertical"
         android:gravity="center">
         <LinearLayout
+          android:transitionName="@string/logo_animation"
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
           android:minHeight="115dp"
+          android:orientation="horizontal"
           android:gravity="center">
           <android.support.v7.widget.AppCompatImageView
-            android:transitionName="@string/logo_animation"
             android:layout_width="85dp"
             android:layout_height="85dp"
             android:contentDescription="@string/app_name"
@@ -72,7 +73,7 @@
                   android:layout_height="wrap_content"
                   android:inputType="textEmailAddress|textNoSuggestions"
                   android:minWidth="350dp"
-                  android:drawableStart="@drawable/ic_mail"
+                  android:drawableStart="@drawable/ic_mail_wrapped"
                   android:drawablePadding="6dp"
                   android:id="@+id/login_form_email"
                   android:hint="@string/prompt_email"
@@ -88,7 +89,7 @@
                   android:layout_height="wrap_content"
                   android:inputType="textPassword"
                   android:minWidth="350dp"
-                  android:drawableStart="@drawable/ic_lock"
+                  android:drawableStart="@drawable/ic_lock_wrapped"
                   android:drawablePadding="6dp"
                   android:id="@+id/login_form_password"
                   android:hint="@string/prompt_password"

@@ -28,7 +28,6 @@
     <activity android:name=".activity.DashBoardActivity"/>
     <activity android:name=".activity.SignupActivity"/>
     <activity android:name=".activity.AddNewActivity"/>
-    <activity android:name=".activity.AddNewActivity"/>
   </application>
 
 </manifest>

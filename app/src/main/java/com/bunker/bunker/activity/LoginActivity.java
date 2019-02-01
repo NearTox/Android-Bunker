@@ -6,15 +6,15 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 
 import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.R;
@@ -23,7 +23,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
-
 
 public class LoginActivity extends BaseAuth {
   private static final String TAG = LoginActivity.class.getSimpleName();
@@ -49,22 +48,22 @@ public class LoginActivity extends BaseAuth {
 
     // Set up the login form.
     //EditText
-    mPasswordView = (AppCompatEditText)findViewById(R.id.login_form_password);
-    mEmailView = (AppCompatEditText)findViewById(R.id.login_form_email);
+    mPasswordView = findViewById(R.id.login_form_password);
+    mEmailView = findViewById(R.id.login_form_email);
 
     //View
     mLoginFormView = findViewById(R.id.login_form);
     mProgressView = findViewById(R.id.login_progress);
 
     //Button
-    AppCompatButton mEmailSignInButton = (AppCompatButton)findViewById(R.id.login_form_button);
+    AppCompatButton mEmailSignInButton = findViewById(R.id.login_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         attemptLogin();
       }
     });
-    AppCompatButton mEmailRecover = (AppCompatButton)findViewById(R.id.login_form_recover);
+    AppCompatButton mEmailRecover = findViewById(R.id.login_form_recover);
     mEmailRecover.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {

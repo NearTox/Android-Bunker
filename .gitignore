@@ -11,3 +11,5 @@ gradle.properties
 
 # Other
 .DS_Store
+
+app/google-services.json

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/drawer"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:fitsSystemWindows="true"
   tools:context=".activity.SignupActivity">
-  <android.support.design.widget.CoordinatorLayout
+
+  <androidx.coordinatorlayout.widget.CoordinatorLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent">    
+    android:layout_height="match_parent">
+
     <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
@@ -18,29 +19,33 @@
       <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
         <LinearLayout
-          android:transitionName="@string/logo_animation"
           android:layout_width="match_parent"
           android:layout_height="0dp"
           android:layout_weight="1"
+          android:gravity="center"
           android:minHeight="115dp"
           android:orientation="horizontal"
-          android:gravity="center">
-          <android.support.v7.widget.AppCompatImageView
+          android:transitionName="@string/logo_animation">
+
+          <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="85dp"
             android:layout_height="85dp"
-            android:contentDescription="@string/app_name"
-            android:background="@mipmap/ic_launcher"/>
-          <android.support.v7.widget.AppCompatTextView
+            android:background="@mipmap/ic_launcher"
+            android:contentDescription="@string/app_name" />
+
+          <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:text="@string/title_activity_signup"
-            android:textStyle="bold"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            android:textStyle="bold" />
         </LinearLayout>
+
         <LinearLayout
           android:layout_width="match_parent"
           android:layout_height="0dp"
@@ -53,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
           <ScrollView
             android:id="@+id/sign_up_form"
@@ -63,68 +68,75 @@
             <LinearLayout
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:padding="16dp"
+              android:gravity="center"
               android:orientation="vertical"
-              android:gravity="center">
-              <android.support.design.widget.TextInputLayout
+              android:padding="16dp">
+
+              <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center">
-                <android.support.v7.widget.AppCompatEditText
+
+                <androidx.appcompat.widget.AppCompatEditText
+                  android:id="@+id/sign_up_form_name"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:inputType="textPersonName"
-                  android:minWidth="350dp"
                   android:drawableStart="@drawable/ic_account_box_wrapped"
                   android:drawablePadding="6dp"
-                  android:id="@+id/sign_up_form_name"
                   android:hint="@string/prompt_name"
-                  android:maxLines="1"/>
-              </android.support.design.widget.TextInputLayout>
-              <android.support.design.widget.TextInputLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_margin="4dp"
-              android:gravity="center">
-              <android.support.v7.widget.AppCompatEditText
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress|textNoSuggestions"
-                android:minWidth="350dp"
-                android:drawableStart="@drawable/ic_mail_wrapped"
-                android:drawablePadding="6dp"
-                android:id="@+id/sign_up_form_email"
-                android:hint="@string/prompt_email"
-                android:maxLines="1"/>
-            </android.support.design.widget.TextInputLayout>
-              <android.support.design.widget.TextInputLayout
+                  android:inputType="textPersonName"
+                  android:maxLines="1"
+                  android:minWidth="350dp" />
+              </com.google.android.material.textfield.TextInputLayout>
+
+              <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="4dp"
                 android:gravity="center">
-                <android.support.v7.widget.AppCompatEditText
+
+                <androidx.appcompat.widget.AppCompatEditText
+                  android:id="@+id/sign_up_form_email"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
-                  android:inputType="textPassword"
-                  android:minWidth="350dp"
+                  android:drawableStart="@drawable/ic_mail_wrapped"
+                  android:drawablePadding="6dp"
+                  android:hint="@string/prompt_email"
+                  android:inputType="textEmailAddress|textNoSuggestions"
+                  android:maxLines="1"
+                  android:minWidth="350dp" />
+              </com.google.android.material.textfield.TextInputLayout>
+
+              <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:gravity="center">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                  android:id="@+id/sign_up_form_password"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
                   android:drawableStart="@drawable/ic_lock_wrapped"
                   android:drawablePadding="6dp"
-                  android:id="@+id/sign_up_form_password"
                   android:hint="@string/prompt_password"
-                  android:maxLines="1"/>
-              </android.support.design.widget.TextInputLayout>
-              <android.support.v7.widget.AppCompatButton
+                  android:inputType="textPassword"
+                  android:maxLines="1"
+                  android:minWidth="350dp" />
+              </com.google.android.material.textfield.TextInputLayout>
+
+              <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/sign_up_form_button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="16dp"
                 android:text="@string/action_sign_up"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
             </LinearLayout>
           </ScrollView>
         </LinearLayout>
       </LinearLayout>
     </LinearLayout>
-  </android.support.design.widget.CoordinatorLayout>
-</android.support.v4.widget.DrawerLayout>
+  </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

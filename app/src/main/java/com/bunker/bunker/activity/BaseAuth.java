@@ -1,15 +1,16 @@
 package com.bunker.bunker.activity;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public abstract class BaseAuth extends AppCompatActivity
-  implements FirebaseAuth.AuthStateListener {
+    implements FirebaseAuth.AuthStateListener {
   private static final String TAG = MainActivity.class.getName();
 
   protected FirebaseAuth mAuth;

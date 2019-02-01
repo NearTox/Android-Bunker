@@ -2,22 +2,24 @@ package com.bunker.bunker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -81,7 +83,7 @@ private void myToggleSelection(int idx) {
     mDatabase = MyDatabase.getInstance().getReference();
     // [END create_database_reference]
 
-    mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
+    mRecycler = rootView.findViewById(R.id.all_data_list);
     mRecycler.setHasFixedSize(true);
 
     return rootView;
@@ -99,9 +101,25 @@ private void myToggleSelection(int idx) {
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
-    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(CalendarModel.class, R.layout.item_contants, ContactsHolder.class, postsQuery) {
+
+    FirebaseRecyclerOptions<CalendarModel> options =
+        new FirebaseRecyclerOptions.Builder<CalendarModel>()
+            .setQuery(postsQuery, CalendarModel.class)
+            .build();
+    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(options) {
       @Override
-      protected void populateViewHolder(final ContactsHolder viewHolder, final CalendarModel model, final int position) {
+      public ContactsHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Create a new instance of the ViewHolder, in this case we are using a custom
+        // layout called R.layout.message for each item
+        View view = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.item_contants, parent, false);
+
+        return new ContactsHolder(view);
+      }
+
+
+      @Override
+      protected void  onBindViewHolder(ContactsHolder viewHolder, int position, CalendarModel model) {
         final DatabaseReference postRef = getRef(position);
 
         // Set click listener for the whole post view
@@ -186,11 +204,15 @@ private void myToggleSelection(int idx) {
   // [END post_stars_transaction]
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if(mAdapter != null) {
-      mAdapter.cleanup();
-    }
+  public void onStart() {
+    super.onStart();
+    mAdapter.startListening();
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    mAdapter.stopListening();
   }
 
   public String getUid() {
@@ -215,9 +237,9 @@ private void myToggleSelection(int idx) {
 
     public ContactsHolder(View itemView) {
       super(itemView);
-      nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);
-      subnameView = (AppCompatTextView)itemView.findViewById(R.id.item_subname);
-      iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
+      nameView = itemView.findViewById(R.id.item_name);
+      subnameView = itemView.findViewById(R.id.item_subname);
+      iconView = itemView.findViewById(R.id.item_icon);
     }
   }
 

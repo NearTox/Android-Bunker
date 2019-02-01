@@ -1,23 +1,21 @@
 package com.bunker.bunker.activity;
 
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
@@ -26,6 +24,9 @@ import com.bunker.bunker.fragment.MyContacts;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,7 +54,7 @@ public class DashBoardActivity extends AppCompatActivity
       // Create MD5 Hash
       MessageDigest digest = java.security.MessageDigest.getInstance(MD5);
       digest.update(s.getBytes());
-      byte messageDigest[] = digest.digest();
+      byte[] messageDigest = digest.digest();
 
       // Create Hex String
       StringBuilder hexString = new StringBuilder();
@@ -112,12 +113,12 @@ public class DashBoardActivity extends AppCompatActivity
     connectedRef = mDatabase.getReference(".info/connected");
     connectedRef.addValueEventListener(MyConection);
 
-    drawerLayout = (DrawerLayout)findViewById(R.id.drawer);
+    drawerLayout = findViewById(R.id.drawer);
 
-    Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+    Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab_add_client);
+    FloatingActionButton fab = findViewById(R.id.fab_add_client);
     fab.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
@@ -132,20 +133,20 @@ public class DashBoardActivity extends AppCompatActivity
     getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_menu_wrapped);
     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-    NavigationView navigationView = (NavigationView)findViewById(R.id.nav_view);
+    NavigationView navigationView = findViewById(R.id.nav_view);
     navigationView.setNavigationItemSelectedListener(this);
     View headerLayout = navigationView.inflateHeaderView(R.layout.navheader);
     if(user.getEmail() != null) {
-      AppCompatTextView email = (AppCompatTextView)headerLayout.findViewById(R.id.nav_email_view);
+      AppCompatTextView email = headerLayout.findViewById(R.id.nav_email_view);
       email.setText(user.getEmail());
     }
     if(user.getDisplayName() != null) {
-      AppCompatTextView name = (AppCompatTextView)headerLayout.findViewById(R.id.nav_name_view);
+      AppCompatTextView name = headerLayout.findViewById(R.id.nav_name_view);
       name.setText(user.getDisplayName());
     }
-    SimpleDraweeView draweeView = (SimpleDraweeView)headerLayout.findViewById(R.id.nav_imageView);
+    SimpleDraweeView draweeView = headerLayout.findViewById(R.id.nav_imageView);
     RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
-    roundingParams.setBorder(R.color.colorPrimaryDark, 1.0f);
+    roundingParams.setBorder(ContextCompat.getColor(this, R.color.colorPrimaryDark), 1.0f);
     roundingParams.setRoundAsCircle(true);
     draweeView.getHierarchy().setRoundingParams(roundingParams);
     if(user.getPhotoUrl() != null) {
@@ -179,9 +180,9 @@ public class DashBoardActivity extends AppCompatActivity
       }
     };
     // Set up the ViewPager with the sections adapter.
-    mViewPager = (ViewPager)findViewById(R.id.container);
+    mViewPager = findViewById(R.id.container);
     mViewPager.setAdapter(mPagerAdapter);
-    TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
+    TabLayout tabLayout = findViewById(R.id.tabs);
     tabLayout.setupWithViewPager(mViewPager);
 
     //

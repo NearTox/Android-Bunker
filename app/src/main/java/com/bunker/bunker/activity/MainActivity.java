@@ -2,12 +2,13 @@ package com.bunker.bunker.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
 
 import com.bunker.bunker.R;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,8 +36,8 @@ implements View.OnClickListener {
     setContentView(R.layout.activity_main);
 
     // Buttons
-    AppCompatButton mIniciar = (AppCompatButton)findViewById(R.id.main_iniciar);
-    AppCompatButton mRegistar = (AppCompatButton)findViewById(R.id.main_registro);
+    AppCompatButton mIniciar = findViewById(R.id.main_iniciar);
+    AppCompatButton mRegistar = findViewById(R.id.main_registro);
     mIniciar.setOnClickListener(this);
     mRegistar.setOnClickListener(this);
 

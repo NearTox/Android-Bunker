@@ -9,14 +9,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -31,11 +23,20 @@ import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.TextView;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+
 import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.MyToast;
 import com.bunker.bunker.R;
 import com.bunker.bunker.model.CalendarModel;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -51,7 +52,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class AddNewActivity extends AppCompatActivity
-implements TextWatcher, ValueEventListener {
+    implements TextWatcher, ValueEventListener {
   public static final String EXTRA_POST_KEY = "EXTRA_POST_KEY";
   private static final String TAG = "AddNewActivity";
 
@@ -85,7 +86,7 @@ implements TextWatcher, ValueEventListener {
 
   private void hideKeyboard() {
     if(getCurrentFocus() != null && getCurrentFocus().getWindowToken() != null) {
-      InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+      InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
       inputManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
   }
@@ -135,9 +136,9 @@ implements TextWatcher, ValueEventListener {
       }
     }
 
-    setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+    setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
     ActionBar acBar = getSupportActionBar();
-    if(acBar!=null) {
+    if(acBar != null) {
       acBar.setDisplayHomeAsUpEnabled(true);
     }
     if(mPostKey.isEmpty()) {
@@ -152,7 +153,7 @@ implements TextWatcher, ValueEventListener {
 
     //
 
-    mAseguradoraSpinner = (AppCompatSpinner)findViewById(R.id.add_aseguradora);
+    mAseguradoraSpinner = findViewById(R.id.add_aseguradora);
     mAseguradoraSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -164,7 +165,7 @@ implements TextWatcher, ValueEventListener {
 
       }
     });
-    mPlanSpinner = (AppCompatSpinner)findViewById(R.id.add_plan);
+    mPlanSpinner = findViewById(R.id.add_plan);
     mPlanSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
       @Override
       public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -179,8 +180,8 @@ implements TextWatcher, ValueEventListener {
 
     //
 
-    mPolizaLayout = (TextInputLayout)findViewById(R.id.add_num_poliza_layout);
-    mPoliza = (AppCompatEditText)findViewById(R.id.add_num_poliza);
+    mPolizaLayout = findViewById(R.id.add_num_poliza_layout);
+    mPoliza = findViewById(R.id.add_num_poliza);
 
     if(mPostKey.isEmpty()) {
       mPoliza.addTextChangedListener(this);
@@ -189,8 +190,8 @@ implements TextWatcher, ValueEventListener {
       mPoliza.setFocusable(false);
     }
 
-    mClientLayout = (TextInputLayout)findViewById(R.id.add_client_layout);
-    mClient = (AppCompatEditText)findViewById(R.id.add_client);
+    mClientLayout = findViewById(R.id.add_client_layout);
+    mClient = findViewById(R.id.add_client);
     mClient.addTextChangedListener(this);
 
     mClient.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -205,8 +206,8 @@ implements TextWatcher, ValueEventListener {
       }
     });
 
-    mDateLayout = (TextInputLayout)findViewById(R.id.add_date_layout);
-    mDate = (AppCompatTextView)findViewById(R.id.add_date);
+    mDateLayout = findViewById(R.id.add_date_layout);
+    mDate = findViewById(R.id.add_date);
     mDate.addTextChangedListener(this);
 
     mDate.setOnClickListener(new View.OnClickListener() {
@@ -226,12 +227,12 @@ implements TextWatcher, ValueEventListener {
       }
     });
 
-    mBeneficiarioLayout = (TextInputLayout)findViewById(R.id.add_beneficiario_layout);
-    mBeneficiario = (AppCompatEditText)findViewById(R.id.add_beneficiario);
+    mBeneficiarioLayout = findViewById(R.id.add_beneficiario_layout);
+    mBeneficiario = findViewById(R.id.add_beneficiario);
     mBeneficiario.addTextChangedListener(this);
 
-    mMontoLayout = (TextInputLayout)findViewById(R.id.add_monto_layout);
-    mMonto = (AppCompatEditText)findViewById(R.id.add_monto);
+    mMontoLayout = findViewById(R.id.add_monto_layout);
+    mMonto = findViewById(R.id.add_monto);
     mMonto.addTextChangedListener(this);
     mMonto.setOnEditorActionListener(new TextView.OnEditorActionListener() {
       @Override
@@ -246,12 +247,12 @@ implements TextWatcher, ValueEventListener {
       }
     });
 
-    mEmailLayout = (TextInputLayout)findViewById(R.id.add_email_layout);
-    mEmail = (AppCompatEditText)findViewById(R.id.add_email);
+    mEmailLayout = findViewById(R.id.add_email_layout);
+    mEmail = findViewById(R.id.add_email);
     mEmail.addTextChangedListener(this);
 
-    mPhoneLayout = (TextInputLayout)findViewById(R.id.add_phone_layout);
-    mPhone = (AppCompatEditText)findViewById(R.id.add_phone);
+    mPhoneLayout = findViewById(R.id.add_phone_layout);
+    mPhone = findViewById(R.id.add_phone);
     mPhone.addTextChangedListener(this);
 
     if(!mPostKey.isEmpty()) {
@@ -292,7 +293,7 @@ implements TextWatcher, ValueEventListener {
       Map<String, Object> postValues = newCalendar.toMap();
 
       Map<String, Object> childUpdates = new HashMap<>();
-      childUpdates.put("/contacts/" + getUid() + "/" + String.valueOf(newCalendar.NoPoliza), postValues);
+      childUpdates.put("/contacts/" + getUid() + "/" + newCalendar.NoPoliza, postValues);
 
       mDatabase.updateChildren(childUpdates);
     }
@@ -476,9 +477,9 @@ implements TextWatcher, ValueEventListener {
 
   public String getUid() {
     FirebaseUser aa = FirebaseAuth.getInstance().getCurrentUser();
-    if(aa != null){
+    if(aa != null) {
       return aa.getUid();
-    }    else{
+    } else {
       return "";
     }
   }
@@ -512,26 +513,26 @@ implements TextWatcher, ValueEventListener {
       mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
       mLoginFormView.setAlpha(show ? 1 : 0);
       mLoginFormView.animate().
-        setDuration(shortAnimTime)
-        .alpha(show ? 0 : 1)
-        .setInterpolator(new DecelerateInterpolator())
-        .setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
-      });
+          setDuration(shortAnimTime)
+          .alpha(show ? 0 : 1)
+          .setInterpolator(new DecelerateInterpolator())
+          .setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+              mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+          });
       mProgressView.setAlpha(show ? 0 : 1);
       mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
       mProgressView.animate().setDuration(shortAnimTime)
-        .alpha(show ? 1 : 0)
-        .setInterpolator(new DecelerateInterpolator())
-        .setListener(new AnimatorListenerAdapter() {
-        @Override
-        public void onAnimationEnd(Animator animation) {
-          mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        }
-      });
+          .alpha(show ? 1 : 0)
+          .setInterpolator(new DecelerateInterpolator())
+          .setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+              mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+          });
     } else {
       // The ViewPropertyAnimator APIs are not available, so simply show
       // and hide the relevant UI components.

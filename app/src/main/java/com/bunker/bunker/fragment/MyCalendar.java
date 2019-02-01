@@ -2,21 +2,23 @@ package com.bunker.bunker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bunker.bunker.MyDatabase;
 import com.bunker.bunker.R;
 import com.bunker.bunker.activity.AddNewActivity;
 import com.bunker.bunker.model.CalendarModel;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +44,7 @@ public class MyCalendar extends Fragment {
     mDatabase = MyDatabase.getInstance().getReference();
     // [END create_database_reference]
 
-    mRecycler = (RecyclerView)rootView.findViewById(R.id.all_data_list);
+    mRecycler = rootView.findViewById(R.id.all_data_list);
     //mRecycler.setHasFixedSize(true);
     mMesesStr = getResources().getStringArray(R.array.month);
     return rootView;
@@ -60,9 +62,23 @@ public class MyCalendar extends Fragment {
 
     // Set up FirebaseRecyclerAdapter with the Query
     Query postsQuery = getQuery(mDatabase);
-    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(CalendarModel.class, R.layout.item_calendar_day, CalendarHolder.class, postsQuery) {
+    FirebaseRecyclerOptions<CalendarModel> options =
+        new FirebaseRecyclerOptions.Builder<CalendarModel>()
+            .setQuery(postsQuery, CalendarModel.class)
+            .build();
+    mAdapter = new FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>(options) {
       @Override
-      protected void populateViewHolder(final CalendarHolder viewHolder, final CalendarModel model, final int position) {
+      public CalendarHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        // Create a new instance of the ViewHolder, in this case we are using a custom
+        // layout called R.layout.message for each item
+        View view = LayoutInflater.from(parent.getContext())
+            .inflate(R.layout.item_calendar_day, parent, false);
+
+        return new CalendarHolder(view);
+      }
+
+      @Override
+      protected void onBindViewHolder(CalendarHolder viewHolder, int position, CalendarModel model) {
         final DatabaseReference postRef = getRef(position);
 
         // Set click listener for the whole post view
@@ -96,11 +112,15 @@ public class MyCalendar extends Fragment {
   }
 
   @Override
-  public void onDestroy() {
-    super.onDestroy();
-    if(mAdapter != null) {
-      mAdapter.cleanup();
-    }
+  public void onStart() {
+    super.onStart();
+    mAdapter.startListening();
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    mAdapter.stopListening();
   }
 
   public String getUid() {
@@ -149,11 +169,11 @@ public class MyCalendar extends Fragment {
     public CalendarHolder(View itemView) {
       super(itemView);
       view = itemView;
-      dayView = (AppCompatTextView)itemView.findViewById(R.id.item_day);
-      monthView = (AppCompatTextView)itemView.findViewById(R.id.item_month);
-      nameView = (AppCompatTextView)itemView.findViewById(R.id.item_name);
-      subnameView = (AppCompatTextView)itemView.findViewById(R.id.item_subname);
-      iconView = (AppCompatImageView)itemView.findViewById(R.id.item_icon);
+      dayView = itemView.findViewById(R.id.item_day);
+      monthView = itemView.findViewById(R.id.item_month);
+      nameView = itemView.findViewById(R.id.item_name);
+      subnameView = itemView.findViewById(R.id.item_subname);
+      iconView = itemView.findViewById(R.id.item_icon);
       hidePost(true);
     }
 

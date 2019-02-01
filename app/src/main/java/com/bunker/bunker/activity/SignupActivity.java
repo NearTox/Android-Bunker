@@ -1,22 +1,20 @@
 package com.bunker.bunker.activity;
 
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatEditText;
 
 import com.bunker.bunker.EmailFormater;
 import com.bunker.bunker.R;
@@ -52,16 +50,16 @@ public class SignupActivity extends BaseAuth {
 
     // Set up the login form.
     //EditText
-    mPasswordView = (AppCompatEditText)findViewById(R.id.sign_up_form_password);
-    mEmailView = (AppCompatEditText)findViewById(R.id.sign_up_form_email);
-    mNameView = (AppCompatEditText)findViewById(R.id.sign_up_form_name);
+    mPasswordView = findViewById(R.id.sign_up_form_password);
+    mEmailView = findViewById(R.id.sign_up_form_email);
+    mNameView = findViewById(R.id.sign_up_form_name);
 
     //View
     mLoginFormView = findViewById(R.id.sign_up_form);
     mProgressView = findViewById(R.id.sign_up_progress);
 
     //Button
-    AppCompatButton mEmailSignInButton = (AppCompatButton)findViewById(R.id.sign_up_form_button);
+    AppCompatButton mEmailSignInButton = findViewById(R.id.sign_up_form_button);
     mEmailSignInButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {

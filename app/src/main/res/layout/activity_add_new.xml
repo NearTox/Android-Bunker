@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_num_poliza"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_client"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_beneficiario"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_monto"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -182,7 +182,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_email"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp">
 
-            <androidx.appcompat.widget.AppCompatEditText
+            <com.google.android.material.textfield.TextInputEditText
               android:id="@+id/add_phone"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"

@@ -1,12 +1,9 @@
 package com.bunker.bunker.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.view.View
-
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
@@ -16,7 +13,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-
 import com.bunker.bunker.MyDatabase
 import com.bunker.bunker.R
 import com.bunker.bunker.fragment.MyCalendar
@@ -28,35 +24,26 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-
-import java.security.MessageDigest
+import com.google.firebase.database.*
 import java.security.NoSuchAlgorithmException
 
 class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-  private val TAG = DashBoardActivity::class.java.simpleName
-  private var drawerLayout: DrawerLayout? = null
-  private var mPagerAdapter: FragmentPagerAdapter? = null
-  private var mViewPager: ViewPager? = null
-  internal var mDatabase: FirebaseDatabase? = null
-  internal var connectedRef: DatabaseReference? = null
-  private var user: FirebaseUser? = null
+  private lateinit var drawerLayout: DrawerLayout
+  private lateinit var mPagerAdapter: FragmentPagerAdapter
+  private lateinit var mViewPager: ViewPager
+  private lateinit var mDatabase: FirebaseDatabase
+  private lateinit var connectedRef: DatabaseReference
 
   private val MyConection = object : ValueEventListener {
     override fun onDataChange(snapshot: DataSnapshot) {
       val connected = snapshot.getValue(Boolean::class.java)!!
       if(connected) {
         Log.d(TAG, "connected")
-        //Snackbar snackbar = Snackbar.make(drawerLayout, "Sincronizando...", Snackbar.LENGTH_LONG);
-        //snackbar.show();
+        /*val snackbar = Snackbar.make(drawerLayout, "Sincronizando...", Snackbar.LENGTH_LONG)
+        snackbar.show()*/
       } else {
-        //Snackbar snackbar = Snackbar.make(drawerLayout, "Usando Datos Locales", Snackbar.LENGTH_LONG);
-        //snackbar.show();
+        /*val snackbar = Snackbar.make(drawerLayout, "Usando Datos Locales", Snackbar.LENGTH_LONG)
+        snackbar.show()*/
         Log.d(TAG, "not connected")
       }
     }
@@ -68,9 +55,7 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
   public override fun onStop() {
     super.onStop()
-    if(connectedRef != null) {
-      connectedRef!!.removeEventListener(MyConection)
-    }
+    connectedRef.removeEventListener(MyConection)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,11 +63,11 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     Fresco.initialize(this)
     setContentView(R.layout.activity_dash_board)
 
-    user = FirebaseAuth.getInstance().currentUser
+    val user = FirebaseAuth.getInstance().currentUser
 
     mDatabase = MyDatabase.Database
-    connectedRef = mDatabase?.getReference(".info/connected")
-    connectedRef!!.addValueEventListener(MyConection)
+    connectedRef = mDatabase.getReference(".info/connected")
+    connectedRef.addValueEventListener(MyConection)
 
     drawerLayout = findViewById(R.id.drawer)
 
@@ -91,7 +76,7 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
     val fab = findViewById<FloatingActionButton>(R.id.fab_add_client)
     fab.setOnClickListener { view ->
-      //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+      //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show()
 
       val context = view.context
       val intent = Intent(context, AddNewActivity::class.java)
@@ -106,21 +91,21 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     val headerLayout = navigationView.inflateHeaderView(R.layout.navheader)
     if(user!!.email != null) {
       val email = headerLayout.findViewById<AppCompatTextView>(R.id.nav_email_view)
-      email.text = user!!.email
+      email.text = user.email
     }
-    if(user!!.displayName != null) {
+    if(user.displayName != null) {
       val name = headerLayout.findViewById<AppCompatTextView>(R.id.nav_name_view)
-      name.text = user!!.displayName
+      name.text = user.displayName
     }
     val draweeView = headerLayout.findViewById<SimpleDraweeView>(R.id.nav_imageView)
     val roundingParams = RoundingParams.fromCornersRadius(5f)
     roundingParams.setBorder(ContextCompat.getColor(this, R.color.colorPrimaryDark), 1.0f)
     roundingParams.roundAsCircle = true
     draweeView.hierarchy.roundingParams = roundingParams
-    if(user!!.photoUrl != null) {
-      draweeView.setImageURI(user!!.photoUrl)
-    } else if(user!!.email != null) {
-      val md5_email = md5(user!!.email!!)
+    if(user.photoUrl != null) {
+      draweeView.setImageURI(user.photoUrl.toString())
+    } else if(user.email != null) {
+      val md5_email = md5(user.email!!)
       if(!md5_email.isEmpty()) {
         draweeView.setImageURI("https://secure.gravatar.com/avatar/$md5_email")
       }
@@ -146,21 +131,21 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
     }
     // Set up the ViewPager with the sections adapter.
     mViewPager = findViewById(R.id.container)
-    mViewPager!!.adapter = mPagerAdapter
+    mViewPager.adapter = mPagerAdapter
     val tabLayout = findViewById<TabLayout>(R.id.tabs)
     tabLayout.setupWithViewPager(mViewPager)
 
     //
-    //ImageView iv = (ImageView) findViewById(R.id.img_anim);
-    //Animation rotation = AnimationUtils.loadAnimation(this, R.anim.popup_in);
-    //rotation.setRepeatCount(1);
-    //iv.startAnimation(rotation);
-    //menu.findItem(R.id.my_menu_item_id).setActionView(iv);
+    //ImageView iv = (ImageView) findViewById(R.id.img_anim)
+    //Animation rotation = AnimationUtils.loadAnimation(this, R.anim.popup_in)
+    //rotation.setRepeatCount(1)
+    //iv.startAnimation(rotation)
+    //menu.findItem(R.id.my_menu_item_id).setActionView(iv)
   }
 
   override fun onBackPressed() {
-    if(drawerLayout!!.isDrawerOpen(GravityCompat.START)) {
-      drawerLayout!!.closeDrawer(GravityCompat.START)
+    if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+      drawerLayout.closeDrawer(GravityCompat.START)
     } else {
       super.onBackPressed()
     }
@@ -168,7 +153,7 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if(item.itemId == android.R.id.home) {
-      drawerLayout!!.openDrawer(GravityCompat.START)
+      drawerLayout.openDrawer(GravityCompat.START)
       return true
     }
     return super.onOptionsItemSelected(item)
@@ -183,7 +168,7 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
       startActivity(main)
       finish()
     }
-    drawerLayout!!.closeDrawer(GravityCompat.START)
+    drawerLayout.closeDrawer(GravityCompat.START)
     return true
   }
 
@@ -213,5 +198,7 @@ class DashBoardActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
 
       return ""
     }
+
+    private const val TAG = "DashBoardActivity"
   }
 }

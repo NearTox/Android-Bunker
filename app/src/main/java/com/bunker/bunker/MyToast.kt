@@ -7,14 +7,12 @@ object MyToast {
   private var mToastCurrent: Toast? = null
 
   fun EndCurrentToast() {
-    if(mToastCurrent != null) {
-      mToastCurrent!!.cancel()
-    }
+    mToastCurrent?.cancel()
   }
 
   fun ShowToast(str: String, pThis: Context) {
     EndCurrentToast()
     mToastCurrent = Toast.makeText(pThis, str, Toast.LENGTH_SHORT)
-    mToastCurrent!!.show()
+    mToastCurrent?.show()
   }
 }

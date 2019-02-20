@@ -78,7 +78,7 @@
                 android:layout_margin="4dp"
                 android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.google.android.material.textfield.TextInputEditText
                   android:id="@+id/login_form_email"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -96,7 +96,7 @@
                 android:layout_margin="4dp"
                 android:gravity="center">
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <com.google.android.material.textfield.TextInputEditText
                   android:id="@+id/login_form_password"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
                   android:minWidth="350dp" />
               </com.google.android.material.textfield.TextInputLayout>
 
-              <androidx.appcompat.widget.AppCompatButton
+              <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_form_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -116,9 +116,9 @@
                 android:text="@string/action_sign_in"
                 android:textStyle="bold" />
 
-              <androidx.appcompat.widget.AppCompatButton
+              <com.google.android.material.button.MaterialButton
                 android:id="@+id/login_form_recover"
-                style="@style/Widget.AppCompat.Button.Borderless"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"

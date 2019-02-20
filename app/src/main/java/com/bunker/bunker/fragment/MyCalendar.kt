@@ -6,13 +6,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-
 import com.bunker.bunker.MyDatabase
 import com.bunker.bunker.R
 import com.bunker.bunker.activity.AddNewActivity
@@ -20,20 +18,18 @@ import com.bunker.bunker.model.CalendarModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.Query
-
-import java.util.Calendar
+import java.util.*
 
 class MyCalendar : Fragment() {
-  private var mMesesStr: Array<String>? = null
-  private var mDatabase: DatabaseReference? = null
+  private lateinit var mMesesStr: Array<String>
+  private lateinit var mDatabase: DatabaseReference
 
-  private var mAdapter: FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>? = null
-  private var mRecycler: RecyclerView? = null
-  private var mManager: LinearLayoutManager? = null
-  internal var myCalendar = Calendar.getInstance()
+  private lateinit var mAdapter: FirebaseRecyclerAdapter<CalendarModel, CalendarHolder>
+  private lateinit var mRecycler: RecyclerView
+  private lateinit var mManager: LinearLayoutManager
+  private val myCalendar = Calendar.getInstance()
 
   val uid: String
     get() {
@@ -42,7 +38,7 @@ class MyCalendar : Fragment() {
     }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-    //super.onCreateView(inflater, container, savedInstanceState);
+    //super.onCreateView(inflater, container, savedInstanceState)
     val rootView = inflater.inflate(R.layout.fragment_all_data, container, false)
 
     // [START create_database_reference]
@@ -50,7 +46,7 @@ class MyCalendar : Fragment() {
     // [END create_database_reference]
 
     mRecycler = rootView.findViewById(R.id.all_data_list)
-    //mRecycler.setHasFixedSize(true);
+    //mRecycler.setHasFixedSize(true)
     mMesesStr = resources.getStringArray(R.array.month)
     return rootView
   }
@@ -60,9 +56,9 @@ class MyCalendar : Fragment() {
 
     // Set up Layout Manager, reverse layout
     mManager = LinearLayoutManager(activity)
-    //mManager.setReverseLayout(true);
-    //mManager.setStackFromEnd(true);
-    mRecycler!!.layoutManager = mManager
+    //mManager.setReverseLayout(true)
+    //mManager.setStackFromEnd(true)
+    mRecycler.layoutManager = mManager
 
     // Set up FirebaseRecyclerAdapter with the Query
     val postsQuery = getQuery(mDatabase)
@@ -93,30 +89,30 @@ class MyCalendar : Fragment() {
 
         // Determine if the current user has liked this post and set UI accordingly
         /*if (model.stars.containsKey(getUid())) {
-          viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_24);
+          viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_24)
         } else {
-          viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24);
+          viewHolder.starView.setImageResource(R.drawable.ic_toggle_star_outline_24)
         }*/
 
         // Bind Post to ViewHolder, setting OnClickListener for the star button
         bindToPost(viewHolder, model, View.OnClickListener { })
       }
     }
-    mRecycler!!.adapter = mAdapter
+    mRecycler.adapter = mAdapter
   }
 
   override fun onStart() {
     super.onStart()
-    mAdapter!!.startListening()
+    mAdapter.startListening()
   }
 
   override fun onStop() {
     super.onStop()
-    mAdapter!!.stopListening()
+    mAdapter.stopListening()
   }
 
-  internal fun comparePlan(post: CalendarModel): Boolean {
-    if(post.Plan > 0 && post.Plan < 5 || post.Plan == 6 || post.Plan == 12) {
+  private fun comparePlan(post: CalendarModel): Boolean {
+    if(post.Plan in 1..4 || post.Plan == 6 || post.Plan == 12) {
       val mod = (post.Mes + 1) % post.Plan
       return mod != (myCalendar.get(Calendar.MONTH) + 1) % post.Plan
     } else {
@@ -128,31 +124,26 @@ class MyCalendar : Fragment() {
     pThis.dayView.text = post.Dia.toString()
     val isVisible = !comparePlan(post)
     if(isVisible) {
-      pThis.monthView.text = mMesesStr!![myCalendar.get(Calendar.MONTH)]
-    } else if(post.Mes < mMesesStr!!.size) {
-      pThis.monthView.text = mMesesStr!![post.Mes]
+      pThis.monthView.text = mMesesStr[myCalendar.get(Calendar.MONTH)]
+    } else if(post.Mes < mMesesStr.size) {
+      pThis.monthView.text = mMesesStr[post.Mes]
     } else {
       pThis.monthView.text = post.Mes.toString()
     }
     pThis.nameView.text = post.Nombre
-    pThis.subnameView.text = post.NoPoliza.toString()
+    pThis.subNameView.text = post.NoPoliza.toString()
     pThis.iconView.setOnClickListener(starClickListener)
     pThis.hidePost(comparePlan(post))
   }
 
-  class CalendarHolder(internal var view: View) : RecyclerView.ViewHolder(view) {
-    internal var dayView: AppCompatTextView
-    internal var monthView: AppCompatTextView
-    internal var nameView: AppCompatTextView
-    internal var subnameView: AppCompatTextView
-    internal var iconView: AppCompatImageView
+  class CalendarHolder(private val view: View) : RecyclerView.ViewHolder(view) {
+    internal val dayView: AppCompatTextView = view.findViewById(R.id.item_day)
+    internal val monthView: AppCompatTextView = view.findViewById(R.id.item_month)
+    internal val nameView: AppCompatTextView = view.findViewById(R.id.item_name)
+    internal val subNameView: AppCompatTextView = view.findViewById(R.id.item_subname)
+    internal val iconView: AppCompatImageView = view.findViewById(R.id.item_icon)
 
     init {
-      dayView = view.findViewById(R.id.item_day)
-      monthView = view.findViewById(R.id.item_month)
-      nameView = view.findViewById(R.id.item_name)
-      subnameView = view.findViewById(R.id.item_subname)
-      iconView = view.findViewById(R.id.item_icon)
       hidePost(true)
     }
 

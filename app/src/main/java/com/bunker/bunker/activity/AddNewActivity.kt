@@ -2,17 +2,12 @@ package com.bunker.bunker.activity
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
-import android.annotation.TargetApi
 import android.app.DatePickerDialog
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -20,76 +15,63 @@ import android.view.animation.DecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
-import android.widget.DatePicker
-import android.widget.TextView
-
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatEditText
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
-
 import com.bunker.bunker.EmailFormater
 import com.bunker.bunker.MyDatabase
 import com.bunker.bunker.MyToast
 import com.bunker.bunker.R
 import com.bunker.bunker.model.CalendarModel
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.Query
-import com.google.firebase.database.ValueEventListener
-
+import com.google.firebase.database.*
 import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.HashMap
-import java.util.Locale
+import java.util.*
 
 class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
 
-  internal var mPostRef: Query? = null
-  private var mPostKey = ""
-  private var mDatabase: DatabaseReference? = null
+  private var mPostRef: Query? = null
+  private lateinit var mPostKey: String
+  private lateinit var mDatabase: DatabaseReference
   private var mHasMod = false
   private var mTask = false
 
-  private var mProgressView: View? = null
-  private var mLoginFormView: View? = null
+  private lateinit var mProgressView: View
+  private lateinit var mLoginFormView: View
 
-  private var mAseguradoraSpinner: AppCompatSpinner? = null
-  private var mPlanSpinner: AppCompatSpinner? = null
+  private lateinit var mAseguradoraSpinner: AppCompatSpinner
+  private lateinit var mPlanSpinner: AppCompatSpinner
 
-  private var mPolizaLayout: TextInputLayout? = null
-  private var mClientLayout: TextInputLayout? = null
-  private var mDateLayout: TextInputLayout? = null
-  private var mBeneficiarioLayout: TextInputLayout? = null
-  private var mMontoLayout: TextInputLayout? = null
-  private var mEmailLayout: TextInputLayout? = null
-  private var mPhoneLayout: TextInputLayout? = null
+  private lateinit var mPolizaLayout: TextInputLayout
+  private lateinit var mClientLayout: TextInputLayout
+  private lateinit var mDateLayout: TextInputLayout
+  private lateinit var mBeneficiarioLayout: TextInputLayout
+  private lateinit var mMontoLayout: TextInputLayout
+  private lateinit var mEmailLayout: TextInputLayout
+  private lateinit var mPhoneLayout: TextInputLayout
 
-  private var mPoliza: AppCompatEditText? = null
-  private var mClient: AppCompatEditText? = null
-  private var mDate: AppCompatTextView? = null
-  private var mBeneficiario: AppCompatEditText? = null
-  private var mMonto: AppCompatEditText? = null
-  private var mEmail: AppCompatEditText? = null
-  private var mPhone: AppCompatEditText? = null
+  private lateinit var mPoliza: TextInputEditText
+  private lateinit var mClient: TextInputEditText
+  private lateinit var mDate: AppCompatTextView
+  private lateinit var mBeneficiario: TextInputEditText
+  private lateinit var mMonto: TextInputEditText
+  private lateinit var mEmail: TextInputEditText
+  private lateinit var mPhone: TextInputEditText
 
-  internal var myCalendar = Calendar.getInstance()
+  private var myCalendar = Calendar.getInstance()
 
-  internal var MyDatePick: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+  private var MyDatePick: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
     myCalendar.set(Calendar.YEAR, year)
     myCalendar.set(Calendar.MONTH, monthOfYear)
     myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
     updateLabel()
   }
 
-  internal var newCalendar: CalendarModel? = null
+  private var newCalendar: CalendarModel? = null
 
   val uid: String
     get() {
@@ -106,9 +88,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
 
   public override fun onStop() {
     super.onStop()
-    if(mPostRef != null) {
-      mPostRef!!.removeEventListener(this)
-    }
+    mPostRef?.removeEventListener(this)
   }
 
   private fun updateLabel() {
@@ -116,30 +96,24 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     val myFormat = "dd/MM/yyyy" //In which you need put here
     val sdf = SimpleDateFormat(myFormat, Locale.US)
 
-    mDate!!.text = sdf.format(myCalendar.time)
+    mDate.text = sdf.format(myCalendar.time)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_add_new)
 
-    mDatabase = MyDatabase.Database.getReference()
+    mDatabase = MyDatabase.Database.reference
 
-    if(intent != null) {
-      val Cons = intent
-      if(Cons.getStringExtra(EXTRA_POST_KEY) != null) {
-        mPostKey = Cons.getStringExtra(EXTRA_POST_KEY)
-        Log.i(TAG, "$EXTRA_POST_KEY: $mPostKey")
-      }
-    }
+    mPostKey = intent.getStringExtra(EXTRA_POST_KEY) ?: ""
 
     setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
     val acBar = supportActionBar
     acBar?.setDisplayHomeAsUpEnabled(true)
     if(mPostKey.isEmpty()) {
-      supportActionBar!!.setTitle("Nueva Poliza")
+      supportActionBar?.title = "Nueva Poliza"
     } else {
-      supportActionBar!!.setTitle("Modificar Poliza")
+      supportActionBar?.title = "Modificar Poliza"
     }
 
     //
@@ -149,7 +123,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     //
 
     mAseguradoraSpinner = findViewById(R.id.add_aseguradora)
-    mAseguradoraSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    mAseguradoraSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
         mHasMod = true
       }
@@ -159,7 +133,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
       }
     }
     mPlanSpinner = findViewById(R.id.add_plan)
-    mPlanSpinner!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+    mPlanSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
       override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
         mHasMod = true
       }
@@ -175,35 +149,35 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     mPoliza = findViewById(R.id.add_num_poliza)
 
     if(mPostKey.isEmpty()) {
-      mPoliza!!.addTextChangedListener(this)
+      mPoliza.addTextChangedListener(this)
     } else {
-      mPoliza!!.isEnabled = false
-      mPoliza!!.isFocusable = false
+      mPoliza.isEnabled = false
+      mPoliza.isFocusable = false
     }
 
     mClientLayout = findViewById(R.id.add_client_layout)
     mClient = findViewById(R.id.add_client)
-    mClient!!.addTextChangedListener(this)
+    mClient.addTextChangedListener(this)
 
-    mClient!!.setOnEditorActionListener { textView, actionId, event ->
+    mClient.setOnEditorActionListener { textView, actionId, event ->
       if(actionId == EditorInfo.IME_ACTION_NEXT) {
         hideKeyboard()
         textView.clearFocus()
-        mDate!!.requestFocus()
+        mDate.requestFocus()
       }
       true
     }
 
     mDateLayout = findViewById(R.id.add_date_layout)
     mDate = findViewById(R.id.add_date)
-    mDate!!.addTextChangedListener(this)
+    mDate.addTextChangedListener(this)
 
-    mDate!!.setOnClickListener {
+    mDate.setOnClickListener {
       hideKeyboard()
-      DatePickerDialog(this@AddNewActivity, MyDatePick, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+      DatePickerDialog(this, MyDatePick, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
     }
 
-    mDate!!.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
+    mDate.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
       if(b) {
         view.performClick()
       }
@@ -211,34 +185,34 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
 
     mBeneficiarioLayout = findViewById(R.id.add_beneficiario_layout)
     mBeneficiario = findViewById(R.id.add_beneficiario)
-    mBeneficiario!!.addTextChangedListener(this)
+    mBeneficiario.addTextChangedListener(this)
 
     mMontoLayout = findViewById(R.id.add_monto_layout)
     mMonto = findViewById(R.id.add_monto)
-    mMonto!!.addTextChangedListener(this)
-    mMonto!!.setOnEditorActionListener { textView, actionId, event ->
+    mMonto.addTextChangedListener(this)
+    mMonto.setOnEditorActionListener { textView, actionId, event ->
       if(actionId == EditorInfo.IME_ACTION_NEXT) {
         hideKeyboard()
         textView.clearFocus()
-        mAseguradoraSpinner!!.requestFocus()
-        mAseguradoraSpinner!!.performClick()
+        mAseguradoraSpinner.requestFocus()
+        mAseguradoraSpinner.performClick()
       }
       true
     }
 
     mEmailLayout = findViewById(R.id.add_email_layout)
     mEmail = findViewById(R.id.add_email)
-    mEmail!!.addTextChangedListener(this)
+    mEmail.addTextChangedListener(this)
 
     mPhoneLayout = findViewById(R.id.add_phone_layout)
     mPhone = findViewById(R.id.add_phone)
-    mPhone!!.addTextChangedListener(this)
+    mPhone.addTextChangedListener(this)
 
     if(!mPostKey.isEmpty()) {
       showProgress(true)
-      mPostRef = mDatabase!!.child("contacts").child(uid).child(mPostKey)
+      mPostRef = mDatabase.child("contacts").child(uid).child(mPostKey)
       // Attach an listener to read the data at our posts reference
-      mPostRef!!.addValueEventListener(this)
+      mPostRef?.addValueEventListener(this)
     } else {
       updateLabel()
       mHasMod = false
@@ -248,9 +222,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
 
   public override fun onDestroy() {
     super.onDestroy()
-    /*if(mAdapter != null) {
-      mAdapter.cleanup();
-    }*/
+    // if(mAdapter != null) mAdapter.cleanup()
   }
 
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -270,15 +242,15 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
       val childUpdates = HashMap<String, Any>()
       childUpdates["/contacts/" + uid + "/" + newCalendar!!.NoPoliza] = postValues
 
-      mDatabase!!.updateChildren(childUpdates)
+      mDatabase.updateChildren(childUpdates)
     }
   }
 
   private fun writeNewPost() {
     if(newCalendar != null) {
-      mPostRef = mDatabase!!.child("contacts").child(uid).child(newCalendar!!.NoPoliza.toString())
+      mPostRef = mDatabase.child("contacts").child(uid).child(newCalendar!!.NoPoliza.toString())
       // Attach an listener to read the data at our posts reference
-      mPostRef!!.addValueEventListener(this)
+      mPostRef?.addValueEventListener(this)
     }
   }
 
@@ -292,17 +264,17 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
       if(mTask) {
         mTask = false
         showProgress(false)
-        MyToast.ShowToast("La información ya existe", this@AddNewActivity)
+        MyToast.ShowToast("La información ya existe", this)
       }
       if(!mPostKey.isEmpty() && !mTask && !mHasMod) {
         showProgress(false)
         val data = snapshot.getValue(CalendarModel::class.java)
-        mPoliza!!.setText(data!!.NoPoliza.toString())
-        mClient!!.setText(data.Nombre)
-        mBeneficiario!!.setText(data.Beneficiario)
-        mMonto!!.setText(data.Monto.toString())
-        mEmail!!.setText(data.Email)
-        mPhone!!.setText(data.Telefono)
+        mPoliza.setText(data!!.NoPoliza.toString())
+        mClient.setText(data.Nombre)
+        mBeneficiario.setText(data.Beneficiario)
+        mMonto.setText(data.Monto.toString())
+        mEmail.setText(data.Email)
+        mPhone.setText(data.Telefono)
         myCalendar.set(Calendar.DAY_OF_MONTH, data.Dia)
         myCalendar.set(Calendar.MONTH, data.Mes)
         myCalendar.set(Calendar.YEAR, data.Year)
@@ -322,45 +294,45 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     }
 
     // Reset errors.
-    mPolizaLayout!!.error = null
-    mClientLayout!!.error = null
-    mDateLayout!!.error = null
-    mBeneficiarioLayout!!.error = null
-    mMontoLayout!!.error = null
-    mEmailLayout!!.error = null
-    mPhoneLayout!!.error = null
+    mPolizaLayout.error = null
+    mClientLayout.error = null
+    mDateLayout.error = null
+    mBeneficiarioLayout.error = null
+    mMontoLayout.error = null
+    mEmailLayout.error = null
+    mPhoneLayout.error = null
 
-    val poliza = Integer.parseInt("0" + mPoliza!!.text!!.toString())
-    val client = mClient!!.text!!.toString().trim { it <= ' ' }
+    val poliza = Integer.parseInt("0" + mPoliza.text!!.toString())
+    val client = mClient.text!!.toString().trim { it <= ' ' }
 
-    val beneficiario = mBeneficiario!!.text!!.toString().trim { it <= ' ' }
-    val monto = java.lang.Double.parseDouble("0" + mMonto!!.text!!.toString())
-    val email = mEmail!!.text!!.toString().trim { it <= ' ' }
+    val beneficiario = mBeneficiario.text!!.toString().trim { it <= ' ' }
+    val monto = java.lang.Double.parseDouble("0" + mMonto.text!!.toString())
+    val email = mEmail.text!!.toString().trim { it <= ' ' }
     val email_info = EmailFormater(email)
-    val phone = mPhone!!.text!!.toString().trim { it <= ' ' }
+    val phone = mPhone.text!!.toString().trim { it <= ' ' }
 
     var cancel = false
     var focusView: View? = null
 
     // Check for a valid email address.
     if(poliza < 1) {
-      mPolizaLayout!!.error = getString(R.string.error_field_required)
+      mPolizaLayout.error = getString(R.string.error_field_required)
       focusView = mPolizaLayout
       cancel = true
     } else if(client.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
-      mClientLayout!!.error = getString(R.string.error_invalid_name)
+      mClientLayout.error = getString(R.string.error_invalid_name)
       focusView = mClientLayout
       cancel = true
     } else if(beneficiario.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
-      mBeneficiarioLayout!!.error = getString(R.string.error_invalid_name)
+      mBeneficiarioLayout.error = getString(R.string.error_invalid_name)
       focusView = mBeneficiarioLayout
       cancel = true
     } else if(monto <= 0) {
-      mMontoLayout!!.error = getString(R.string.error_field_required)
+      mMontoLayout.error = getString(R.string.error_field_required)
       focusView = mMontoLayout
       cancel = true
     } else if(!email.isEmpty() && !email_info.isValid) {
-      mEmailLayout!!.error = getString(R.string.error_invalid_email)
+      mEmailLayout.error = getString(R.string.error_invalid_email)
       focusView = mEmailLayout
       cancel = true
     }
@@ -385,7 +357,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
       newCalendar!!.Dia = myCalendar.get(Calendar.DAY_OF_MONTH)
       newCalendar!!.Mes = myCalendar.get(Calendar.MONTH)
       newCalendar!!.Year = myCalendar.get(Calendar.YEAR)
-      //newCalendar.Plan = ;
+      //newCalendar.Plan =
       if(email_info.isValid) {
         newCalendar!!.Email = email_info.GetEmail()
       }
@@ -398,7 +370,7 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
 
   private fun doDialogFish() {
     val builder = AlertDialog.Builder(this, R.style.AppDialogTheme)
-    //builder.setTitle("Title");
+    //builder.setTitle("Title")
     builder.setMessage("¿Descartar este contacto?")
 
     val positiveText = "DESCARTAR"
@@ -452,45 +424,34 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
   /**
    * Shows the progress UI and hides the login form.
    */
-
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
   private fun showProgress(show: Boolean) {
-    // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-    // for very easy animations. If available, use these APIs to fade-in
-    // the progress spinner.
-    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-      val shortAnimTime = resources.getInteger(android.R.integer.config_mediumAnimTime)
+    val shortAnimTime = resources.getInteger(android.R.integer.config_mediumAnimTime)
 
-      mLoginFormView!!.visibility = if(show) View.GONE else View.VISIBLE
-      mLoginFormView!!.alpha = (if(show) 1 else 0).toFloat()
-      mLoginFormView!!.animate().setDuration(shortAnimTime.toLong())
-          .alpha((if(show) 0 else 1).toFloat())
-          .setInterpolator(DecelerateInterpolator())
-          .setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-              mLoginFormView!!.visibility = if(show) View.GONE else View.VISIBLE
-            }
-          })
-      mProgressView!!.alpha = (if(show) 0 else 1).toFloat()
-      mProgressView!!.visibility = if(show) View.VISIBLE else View.GONE
-      mProgressView!!.animate().setDuration(shortAnimTime.toLong())
-          .alpha((if(show) 1 else 0).toFloat())
-          .setInterpolator(DecelerateInterpolator())
-          .setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-              mProgressView!!.visibility = if(show) View.VISIBLE else View.GONE
-            }
-          })
-    } else {
-      // The ViewPropertyAnimator APIs are not available, so simply show
-      // and hide the relevant UI components.
-      mProgressView!!.visibility = if(show) View.VISIBLE else View.GONE
-      mLoginFormView!!.visibility = if(show) View.GONE else View.VISIBLE
-    }
+    mLoginFormView.visibility = if(show) View.GONE else View.VISIBLE
+    mLoginFormView.alpha = (if(show) 1 else 0).toFloat()
+    mLoginFormView.animate().setDuration(shortAnimTime.toLong())
+        .alpha((if(show) 0 else 1).toFloat())
+        .setInterpolator(DecelerateInterpolator())
+        .setListener(object : AnimatorListenerAdapter() {
+          override fun onAnimationEnd(animation: Animator) {
+            mLoginFormView.visibility = if(show) View.GONE else View.VISIBLE
+          }
+        })
+    mProgressView.alpha = (if(show) 0 else 1).toFloat()
+    mProgressView.visibility = if(show) View.VISIBLE else View.GONE
+    mProgressView.animate().setDuration(shortAnimTime.toLong())
+        .alpha((if(show) 1 else 0).toFloat())
+        .setInterpolator(DecelerateInterpolator())
+        .setListener(object : AnimatorListenerAdapter() {
+          override fun onAnimationEnd(animation: Animator) {
+            mProgressView.visibility = if(show) View.VISIBLE else View.GONE
+          }
+        })
+
   }
 
   companion object {
-    val EXTRA_POST_KEY = "EXTRA_POST_KEY"
-    private val TAG = "AddNewActivity"
+    private const val TAG = "AddNewActivity"
+    const val EXTRA_POST_KEY = "EXTRA_POST_KEY"
   }
 }

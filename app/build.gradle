@@ -41,6 +41,7 @@ dependencies {
   implementation 'com.facebook.fresco:fresco:1.12.1'
   implementation 'com.firebaseui:firebase-ui-database:4.3.1'
   implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+  implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 }
 
 

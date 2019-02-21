@@ -1,25 +1,22 @@
 package com.bunker.bunker.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import com.bunker.bunker.data.model.UserData
 import com.google.firebase.auth.FirebaseAuth
 
 class UserLiveData : LiveData<UserData>() {
-  private val mConnect = FirebaseAuth.AuthStateListener {
-    val user = it.currentUser
-    value = if(user != null) {
-      Log.d(TAG, "onAuthStateChanged: signed_in")
-      UserData(
-          true,
-          user.displayName ?: ""
+  private val mConnect = FirebaseAuth.AuthStateListener { itt ->
+    val temp = itt.currentUser?.let {
+      UserData(true,
+          it.displayName ?: "",
+          it.email ?: "",
+          it.photoUrl?.toString() ?: "",
+          it.uid
       )
-    } else {
-      Log.d(TAG, "onAuthStateChanged: signed_out")
-      UserData(false)
-    }
+    } ?: UserData(false)
+    // TODO: temp != value
+    if(temp != value) value = temp
   }
-
 
   override fun onActive() {
     mAuth.addAuthStateListener(mConnect)
@@ -31,6 +28,5 @@ class UserLiveData : LiveData<UserData>() {
 
   companion object {
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
-    private const val TAG = "UserLiveData"
   }
 }

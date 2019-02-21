@@ -1,6 +1,6 @@
-package com.bunker.bunker
+package com.bunker.bunker.data
 
-class EmailFormater(email: String) {
+class EmailFormatter(email: String) {
   var userName = ""
     private set
   var host = ""

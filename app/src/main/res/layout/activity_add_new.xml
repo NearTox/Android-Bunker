@@ -189,8 +189,8 @@
               android:drawableStart="@drawable/ic_mail_wrapped"
               android:drawablePadding="6dp"
               android:hint="@string/prompt_email"
-              android:imeOptions="flagNoExtractUi|actionNext"
-              android:inputType="textWebEmailAddress|textNoSuggestions"
+              android:imeOptions="actionNext"
+              android:inputType="textEmailAddress"
               android:maxLines="1" />
           </com.google.android.material.textfield.TextInputLayout>
 

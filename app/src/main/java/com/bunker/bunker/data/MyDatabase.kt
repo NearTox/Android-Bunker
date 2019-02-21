@@ -1,4 +1,4 @@
-package com.bunker.bunker
+package com.bunker.bunker.data
 
 import com.google.firebase.database.FirebaseDatabase
 

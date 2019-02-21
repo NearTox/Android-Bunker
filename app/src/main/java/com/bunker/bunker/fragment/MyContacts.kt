@@ -10,31 +10,29 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bunker.bunker.MyDatabase
 import com.bunker.bunker.R
 import com.bunker.bunker.activity.AddNewActivity
-import com.bunker.bunker.model.CalendarModel
+import com.bunker.bunker.data.MyDatabase
+import com.bunker.bunker.data.UserViewModel
+import com.bunker.bunker.data.UserViewModelFactory
+import com.bunker.bunker.data.model.CalendarModel
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.Query
 
 class MyContacts : Fragment() {
-  private val SelectedItems: SparseBooleanArray? = null
-  private lateinit var mDatabase: DatabaseReference
-
-  private lateinit var mAdapter: FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>
+  private lateinit var viewModel: UserViewModel
   private lateinit var mRecycler: RecyclerView
-  private lateinit var mManager: LinearLayoutManager
 
-  val uid: String
-    get() {
-      val aa = FirebaseAuth.getInstance().currentUser
-      return aa?.uid ?: ""
-    }
+  private val SelectedItems: SparseBooleanArray? = null
+  private val mDatabase: DatabaseReference = MyDatabase.Database.reference
+
+
 
   /*public void toggleSelection(int pos){
     if(SelectedItems.get(pos,false)){
@@ -76,13 +74,10 @@ private void myToggleSelection(int idx) {
          adapter.getSelectedItemCount())
    actionMode.setTitle(title)
 }*/
+
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     //super.onCreateView(inflater, container, savedInstanceState)
     val rootView = inflater.inflate(R.layout.fragment_all_data, container, false)
-
-    // [START create_database_reference]
-    mDatabase = MyDatabase.Database.reference
-    // [END create_database_reference]
 
     mRecycler = rootView.findViewById(R.id.all_data_list)
     mRecycler.setHasFixedSize(true)
@@ -90,22 +85,16 @@ private void myToggleSelection(int idx) {
     return rootView
   }
 
-  override fun onActivityCreated(savedInstanceState: Bundle?) {
-    super.onActivityCreated(savedInstanceState)
-
-    // Set up Layout Manager, reverse layout
-    mManager = LinearLayoutManager(activity)
-    //mManager.setReverseLayout(true)
-    //mManager.setStackFromEnd(true)
-    mRecycler.layoutManager = mManager
-
+  private fun createAdapter() {
     // Set up FirebaseRecyclerAdapter with the Query
-    val postsQuery = getQuery(mDatabase)
-
+    val postsQuery = getQuery()
     val options = FirebaseRecyclerOptions.Builder<CalendarModel>()
         .setQuery(postsQuery, CalendarModel::class.java)
+        .setLifecycleOwner(this)
         .build()
-    mAdapter = object : FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(options) {
+
+
+    mRecycler.adapter  = object : FirebaseRecyclerAdapter<CalendarModel, ContactsHolder>(options) {
       override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactsHolder {
         // Create a new instance of the ViewHolder, in this case we are using a custom
         // layout called R.layout.message for each item
@@ -152,20 +141,36 @@ private void myToggleSelection(int idx) {
         })
       }
     }
-    mRecycler.adapter = mAdapter
   }
 
-  // [START post_stars_transaction]
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+
+    viewModel = ViewModelProviders.of(this, UserViewModelFactory(activity!!))
+        .get(UserViewModel::class.java)
+
+    // Set up Layout Manager, reverse layout
+    val mManager = LinearLayoutManager(activity)
+    //mManager.setReverseLayout(true)
+    //mManager.setStackFromEnd(true)
+    mRecycler.layoutManager = mManager
+
+    viewModel.userData.observe(this, Observer {
+      if(it.isLogged) {
+        createAdapter()
+      }
+    })
+  }
+
   private fun onStarClicked(postRef: DatabaseReference) {
-    /*postRef.runTransaction(new Transaction.Handler() {
-      @Override
-      public Transaction.Result doTransaction(MutableData mutableData) {
-        CalendarModel p = mutableData.getValue(CalendarModel.class)
-        if (p == null) {
+    /*postRef.runTransaction(object : Transaction.Handler {
+      override fun doTransaction(mutableData: MutableData): Transaction.Result {
+        val p = mutableData.getValue(CalendarModel::class.java)
+        if(p == null) {
           return Transaction.success(mutableData)
         }
 
-        if (p.stars.containsKey(getUid())) {
+        if(p.stars.containsKey(getUid())) {
           // Unstar the post and remove self from stars
           p.starCount = p.starCount - 1
           p.stars.remove(getUid())
@@ -176,28 +181,15 @@ private void myToggleSelection(int idx) {
         }
 
         // Set value and report transaction success
-        mutableData.setValue(p)
+        mutableData.value = p
         return Transaction.success(mutableData)
       }
 
-      @Override
-      public void onComplete(DatabaseError databaseError, boolean b,
-                             DataSnapshot dataSnapshot) {
+      override fun onComplete(databaseError: DatabaseError?, b: Boolean, dataSnapshot: DataSnapshot?) {
         // Transaction completed
-        Log.d(TAG, "postTransaction:onComplete:" + databaseError)
+        Log.d(TAG, "postTransaction:onComplete:$databaseError")
       }
     })*/
-  }
-  // [END post_stars_transaction]
-
-  override fun onStart() {
-    super.onStart()
-    mAdapter.startListening()
-  }
-
-  override fun onStop() {
-    super.onStop()
-    mAdapter.stopListening()
   }
 
   class ContactsHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -213,9 +205,9 @@ private void myToggleSelection(int idx) {
 
   }
 
-  fun getQuery(databaseReference: DatabaseReference?): Query {
+  private fun getQuery(): Query {
     // All my posts
-    val myData = databaseReference!!.child("contacts").child(uid)
+    val myData = MyDatabase.Database.reference.child("contacts/${viewModel.userData.value?.uid}")
     myData.keepSynced(true)
     return myData.orderByChild("Nombre")
   }

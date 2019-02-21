@@ -19,24 +19,32 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.appcompat.widget.AppCompatTextView
-import androidx.appcompat.widget.Toolbar
-import com.bunker.bunker.EmailFormater
-import com.bunker.bunker.MyDatabase
-import com.bunker.bunker.MyToast
+import androidx.core.os.ConfigurationCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bunker.bunker.R
-import com.bunker.bunker.model.CalendarModel
+import com.bunker.bunker.data.EmailFormatter
+import com.bunker.bunker.data.MyDatabase
+import com.bunker.bunker.data.UserViewModel
+import com.bunker.bunker.data.UserViewModelFactory
+import com.bunker.bunker.data.model.CalendarModel
+import com.bunker.bunker.data.model.UserData
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.Calendar.*
 
-class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
+class AddNewActivity : AppCompatActivity(), TextWatcher {
+  private lateinit var viewModel: UserViewModel
+  private lateinit var userDateObserver: Observer<UserData>
+  private val mDatabase = MyDatabase.Database.reference
 
-  private var mPostRef: Query? = null
   private lateinit var mPostKey: String
-  private lateinit var mDatabase: DatabaseReference
   private var mHasMod = false
   private var mTask = false
 
@@ -62,58 +70,38 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
   private lateinit var mEmail: TextInputEditText
   private lateinit var mPhone: TextInputEditText
 
-  private var myCalendar = Calendar.getInstance()
-
-  private var MyDatePick: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-    myCalendar.set(Calendar.YEAR, year)
-    myCalendar.set(Calendar.MONTH, monthOfYear)
-    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-    updateLabel()
-  }
-
-  private var newCalendar: CalendarModel? = null
-
-  val uid: String
-    get() {
-      val aa = FirebaseAuth.getInstance().currentUser
-      return aa?.uid ?: ""
-    }
+  private val myCalendar = Calendar.getInstance()
 
   private fun hideKeyboard() {
-    if(currentFocus != null && currentFocus!!.windowToken != null) {
-      val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-      inputManager.hideSoftInputFromWindow(this.currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-    }
-  }
-
-  public override fun onStop() {
-    super.onStop()
-    mPostRef?.removeEventListener(this)
+    val inputManager: InputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputManager.hideSoftInputFromWindow(this.currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
   }
 
   private fun updateLabel() {
+    val current = ConfigurationCompat.getLocales(resources.configuration).get(0)
+    val format = SimpleDateFormat("dd/MM/yyyy", current)
 
-    val myFormat = "dd/MM/yyyy" //In which you need put here
-    val sdf = SimpleDateFormat(myFormat, Locale.US)
-
-    mDate.text = sdf.format(myCalendar.time)
+    mDate.text = format.format(myCalendar.time)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_add_new)
 
-    mDatabase = MyDatabase.Database.reference
-
     mPostKey = intent.getStringExtra(EXTRA_POST_KEY) ?: ""
 
-    setSupportActionBar(findViewById<View>(R.id.toolbar) as Toolbar)
-    val acBar = supportActionBar
-    acBar?.setDisplayHomeAsUpEnabled(true)
-    if(mPostKey.isEmpty()) {
-      supportActionBar?.title = "Nueva Poliza"
-    } else {
-      supportActionBar?.title = "Modificar Poliza"
+    setSupportActionBar(findViewById(R.id.toolbar))
+
+    viewModel = ViewModelProviders.of(this, UserViewModelFactory(this))
+        .get(UserViewModel::class.java)
+
+    supportActionBar?.run {
+      setDisplayHomeAsUpEnabled(true)
+      title = if(mPostKey.isEmpty()) {
+        "Nueva Poliza"
+      } else {
+        "Modificar Poliza"
+      }
     }
 
     //
@@ -121,27 +109,18 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     mProgressView = findViewById(R.id.add_progress)
 
     //
+    val onItemChange = object : AdapterView.OnItemSelectedListener {
+      override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
+        mHasMod = true
+      }
 
+      override fun onNothingSelected(adapterView: AdapterView<*>) {
+      }
+    }
     mAseguradoraSpinner = findViewById(R.id.add_aseguradora)
-    mAseguradoraSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-      override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-        mHasMod = true
-      }
-
-      override fun onNothingSelected(adapterView: AdapterView<*>) {
-
-      }
-    }
+    mAseguradoraSpinner.onItemSelectedListener = onItemChange
     mPlanSpinner = findViewById(R.id.add_plan)
-    mPlanSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-      override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
-        mHasMod = true
-      }
-
-      override fun onNothingSelected(adapterView: AdapterView<*>) {
-
-      }
-    }
+    mPlanSpinner.onItemSelectedListener = onItemChange
 
     //
 
@@ -165,16 +144,24 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
         textView.clearFocus()
         mDate.requestFocus()
       }
-      true
+      return@setOnEditorActionListener true
     }
 
     mDateLayout = findViewById(R.id.add_date_layout)
     mDate = findViewById(R.id.add_date)
     mDate.addTextChangedListener(this)
 
+
     mDate.setOnClickListener {
       hideKeyboard()
-      DatePickerDialog(this, MyDatePick, myCalendar.get(Calendar.YEAR), myCalendar.get(Calendar.MONTH), myCalendar.get(Calendar.DAY_OF_MONTH)).show()
+      val mDatePick: DatePickerDialog.OnDateSetListener = DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+        myCalendar.set(YEAR, year)
+        myCalendar.set(MONTH, monthOfYear)
+        myCalendar.set(DAY_OF_MONTH, dayOfMonth)
+        updateLabel()
+      }
+      DatePickerDialog(this, mDatePick, myCalendar.get(YEAR), myCalendar.get(MONTH), myCalendar.get(DAY_OF_MONTH))
+          .show()
     }
 
     mDate.onFocusChangeListener = View.OnFocusChangeListener { view, b ->
@@ -208,19 +195,51 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     mPhone = findViewById(R.id.add_phone)
     mPhone.addTextChangedListener(this)
 
-    if(!mPostKey.isEmpty()) {
-      showProgress(true)
-      mPostRef = mDatabase.child("contacts").child(uid).child(mPostKey)
-      // Attach an listener to read the data at our posts reference
-      mPostRef?.addValueEventListener(this)
-    } else {
-      updateLabel()
-      mHasMod = false
-      showProgress(false)
+    val once = object : ValueEventListener {
+      override fun onDataChange(snapshot: DataSnapshot) {
+        if(!snapshot.exists()) return
+
+        showProgress(false)
+        val data = snapshot.getValue(CalendarModel::class.java)!!
+        mPoliza.setText(data.NoPoliza.toString())
+        mClient.setText(data.Nombre)
+        mBeneficiario.setText(data.Beneficiario)
+        mMonto.setText(data.Monto.toString())
+        mEmail.setText(data.Email)
+        mPhone.setText(data.Telefono)
+
+        myCalendar.set(DAY_OF_MONTH, data.Dia)
+        myCalendar.set(MONTH, data.Mes)
+        myCalendar.set(YEAR, data.Year)
+
+        updateLabel()
+        mHasMod = false
+      }
+
+      override fun onCancelled(firebaseError: DatabaseError) {
+        Log.e(TAG, "La informacion no es axcesible")
+      }
     }
+
+    userDateObserver = androidx.lifecycle.Observer {
+      if(!mPostKey.isEmpty()) {
+        showProgress(true)
+        val mPostRef = mDatabase.child("contacts/${it.uid}/$mPostKey")
+        // Attach an listener to read the data at our posts reference
+        mPostRef.addListenerForSingleValueEvent(once)
+      } else {
+        updateLabel()
+        mHasMod = false
+        showProgress(false)
+      }
+      viewModel.userData.removeObserver(userDateObserver)
+    }
+
+    viewModel.userData.observe(this, userDateObserver)
+
   }
 
-  public override fun onDestroy() {
+  override fun onDestroy() {
     super.onDestroy()
     // if(mAdapter != null) mAdapter.cleanup()
   }
@@ -235,57 +254,17 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     return true
   }
 
-  private fun UpdatePost() {
-    if(newCalendar != null) {
-      val postValues = newCalendar!!.toMap()
+  private fun updatePost(calendar: CalendarModel) {
+    val postValues = calendar.toMap()
 
-      val childUpdates = HashMap<String, Any>()
-      childUpdates["/contacts/" + uid + "/" + newCalendar!!.NoPoliza] = postValues
-
-      mDatabase.updateChildren(childUpdates)
-    }
-  }
-
-  private fun writeNewPost() {
-    if(newCalendar != null) {
-      mPostRef = mDatabase.child("contacts").child(uid).child(newCalendar!!.NoPoliza.toString())
-      // Attach an listener to read the data at our posts reference
-      mPostRef?.addValueEventListener(this)
-    }
-  }
-
-  override fun onDataChange(snapshot: DataSnapshot) {
-    Log.e(TAG, "La información ya existe")
-    if(mTask && !mPostKey.isEmpty() || !snapshot.exists()) {
-      mTask = false
-      UpdatePost()
+    val childUpdates = mapOf(
+        "/contacts/${viewModel.userData.value?.uid}/${calendar.NoPoliza}" to postValues
+    )
+    mDatabase.updateChildren(childUpdates).addOnSuccessListener {
       finish()
-    } else {
-      if(mTask) {
-        mTask = false
-        showProgress(false)
-        MyToast.ShowToast("La información ya existe", this)
-      }
-      if(!mPostKey.isEmpty() && !mTask && !mHasMod) {
-        showProgress(false)
-        val data = snapshot.getValue(CalendarModel::class.java)
-        mPoliza.setText(data!!.NoPoliza.toString())
-        mClient.setText(data.Nombre)
-        mBeneficiario.setText(data.Beneficiario)
-        mMonto.setText(data.Monto.toString())
-        mEmail.setText(data.Email)
-        mPhone.setText(data.Telefono)
-        myCalendar.set(Calendar.DAY_OF_MONTH, data.Dia)
-        myCalendar.set(Calendar.MONTH, data.Mes)
-        myCalendar.set(Calendar.YEAR, data.Year)
-        updateLabel()
-        mHasMod = false
-      }
+    }.addOnFailureListener {
+      Snackbar.make(findViewById(android.R.id.content), "Error al actualizar la poliza", Snackbar.LENGTH_LONG).show()
     }
-  }
-
-  override fun onCancelled(firebaseError: DatabaseError) {
-    Log.e(TAG, "La informacion no es axcesible")
   }
 
   private fun doSave() {
@@ -302,14 +281,14 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     mEmailLayout.error = null
     mPhoneLayout.error = null
 
-    val poliza = Integer.parseInt("0" + mPoliza.text!!.toString())
-    val client = mClient.text!!.toString().trim { it <= ' ' }
+    val poliza = Integer.parseInt("0" + mPoliza.text)
+    val client = mClient.text?.trim { it <= ' ' }.toString()
 
-    val beneficiario = mBeneficiario.text!!.toString().trim { it <= ' ' }
-    val monto = java.lang.Double.parseDouble("0" + mMonto.text!!.toString())
-    val email = mEmail.text!!.toString().trim { it <= ' ' }
-    val email_info = EmailFormater(email)
-    val phone = mPhone.text!!.toString().trim { it <= ' ' }
+    val beneficiario = mBeneficiario.text?.trim { it <= ' ' }.toString()
+    val monto = java.lang.Double.parseDouble("0" + mMonto.text?.toString())
+    val email = mEmail.text?.trim { it <= ' ' }.toString()
+    val email_info = EmailFormatter(email)
+    val phone = mPhone.text?.trim { it <= ' ' }.toString()
 
     var cancel = false
     var focusView: View? = null
@@ -319,11 +298,11 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
       mPolizaLayout.error = getString(R.string.error_field_required)
       focusView = mPolizaLayout
       cancel = true
-    } else if(client.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
+    } else if(client.split(" ").dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
       mClientLayout.error = getString(R.string.error_invalid_name)
       focusView = mClientLayout
       cancel = true
-    } else if(beneficiario.split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
+    } else if(beneficiario.split(" ").dropLastWhile { it.isEmpty() }.toTypedArray().size < 2) {
       mBeneficiarioLayout.error = getString(R.string.error_invalid_name)
       focusView = mBeneficiarioLayout
       cancel = true
@@ -340,51 +319,42 @@ class AddNewActivity : AppCompatActivity(), TextWatcher, ValueEventListener {
     if(cancel) {
       // There was an error; don't attempt login and focus the first
       // form field with an error.
-      focusView!!.requestFocus()
+      focusView?.requestFocus()
     } else {
       hideKeyboard()
       // Show a progress spinner, and kick off a background task to
       // perform the user login attempt.
       showProgress(true)
       mTask = true
-      if(newCalendar == null) {
-        newCalendar = CalendarModel()
-      }
-      newCalendar!!.NoPoliza = poliza
-      newCalendar!!.Nombre = client
-      newCalendar!!.Beneficiario = beneficiario
-      newCalendar!!.Monto = monto
-      newCalendar!!.Dia = myCalendar.get(Calendar.DAY_OF_MONTH)
-      newCalendar!!.Mes = myCalendar.get(Calendar.MONTH)
-      newCalendar!!.Year = myCalendar.get(Calendar.YEAR)
+
+      val newCalendar = CalendarModel()
+      newCalendar.NoPoliza = poliza
+      newCalendar.Nombre = client
+      newCalendar.Beneficiario = beneficiario
+      newCalendar.Monto = monto
+      newCalendar.Dia = myCalendar.get(Calendar.DAY_OF_MONTH)
+      newCalendar.Mes = myCalendar.get(Calendar.MONTH)
+      newCalendar.Year = myCalendar.get(Calendar.YEAR)
       //newCalendar.Plan =
       if(email_info.isValid) {
-        newCalendar!!.Email = email_info.GetEmail()
+        newCalendar.Email = email_info.GetEmail()
       }
       if(!phone.isEmpty()) {
-        newCalendar!!.Telefono = phone
+        newCalendar.Telefono = phone
       }
-      writeNewPost()
+      updatePost(newCalendar)
     }
   }
 
   private fun doDialogFish() {
-    val builder = AlertDialog.Builder(this, R.style.AppDialogTheme)
-    //builder.setTitle("Title")
-    builder.setMessage("¿Descartar este contacto?")
-
-    val positiveText = "DESCARTAR"
-    builder.setPositiveButton(positiveText) { dialog, which ->
-      // positive button logic
-      finish()
-    }
-
-    val negativeText = getString(android.R.string.cancel)
-    builder.setNegativeButton(negativeText) { dialog, which ->
-      // negative button logic
-    }
-
-    val dialog = builder.create()
+    val dialog = AlertDialog.Builder(this, R.style.AppDialogTheme)
+        //.setTitle("Title")
+        .setMessage("¿Descartar este contacto?").setPositiveButton("DESCARTAR") { _, _ ->
+          // positive button logic
+          finish()
+        }.setNegativeButton(getString(android.R.string.cancel)) { _, _ ->
+          // negative button logic
+        }.create()
     // display dialog
     dialog.show()
   }
